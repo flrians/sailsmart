@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           messages: [
             {
               role: 'system',
-              content: 'You are a topic classifier. Reply YES if the message is related to sailing, boats, yachts, marine equipment, the Bavaria C50, or any nautical topic. Reply NO for everything else (greetings, general questions, off-topic content).',
+              content: 'You are classifying messages for a Bavaria C50 sailing yacht assistant. The user is already talking to a boat assistant, so short or vague questions are likely about the boat. Reply YES if the message could plausibly be a question about a boat, its systems, equipment, maintenance, navigation, electronics, or sailing in general. Reply NO only if the message is clearly not boat-related — for example pure greetings like "Hi" or "Hello", or completely unrelated topics like cooking, sports, or math. When in doubt, reply YES.',
             },
             { role: 'user', content: latestMessage },
           ],
