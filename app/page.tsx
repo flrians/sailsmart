@@ -7,9 +7,7 @@ import { useRef, useEffect, useState } from 'react';
 import styles from './page.module.css';
 
 export default function Home() {
-  const { messages, sendMessage, status } = useChat({
-    api: '/api/chat',
-  });
+  const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -19,7 +17,7 @@ export default function Home() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     if (!input.trim() || isLoading) return;
     sendMessage({ text: input });
@@ -55,7 +53,7 @@ export default function Home() {
         ) : (
           <div className={styles.messagesArea}>
             {messages?.map((m) => {
-              const displayContent = m.content || (m.parts && m.parts.length > 0 ? m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') : '');
+              const displayContent = m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text as string).join('');
               return (
                 <div
                   key={m.id}
