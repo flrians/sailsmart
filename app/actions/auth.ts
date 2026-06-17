@@ -12,8 +12,9 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
   const lastName = formData.get('lastName') as string;
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  const boatTypeId = formData.get('boatTypeId') as string;
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!firstName || !lastName || !email || !password || !boatTypeId) {
     return { error: 'All fields are required.' };
   }
 
@@ -25,7 +26,7 @@ export async function signUp(prevState: AuthState, formData: FormData): Promise<
     email,
     password,
     options: {
-      data: { first_name: firstName, last_name: lastName },
+      data: { first_name: firstName, last_name: lastName, boat_type_id: boatTypeId },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     },
   });

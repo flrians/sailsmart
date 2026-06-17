@@ -20,6 +20,39 @@ export async function POST(req: Request) {
       return new Response('Unauthorized', { status: 401 });
     }
 
+    // Fetch user's boat type for manual filtering
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('boat_type_id, boat_types(name)')
+      .eq('id', user.id)
+      .single();
+
+    const boatTypeId: string | null = (profile as any)?.boat_type_id ?? null;
+    const boatName: string = (profile as any)?.boat_types?.name ?? 'Bavaria C50';
+
+    // Check if any manual chunks exist for this boat type before running any API calls
+    if (boatTypeId) {
+      const { count } = await supabase
+        .from('manual_chunks')
+        .select('id', { count: 'exact', head: true })
+        .eq('boat_type_id', boatTypeId);
+
+      if (!count || count === 0) {
+        const stream = createUIMessageStream({
+          execute: ({ writer }) => {
+            writer.write({ type: 'text-start', id: 'no-manual' });
+            writer.write({
+              type: 'text-delta',
+              id: 'no-manual',
+              delta: `The manual for your **${boatName}** is not yet available in SailSmart. Currently only the **Bavaria C50** manual is loaded.\n\nYou can switch your boat model in your [Profile](/profile).`,
+            });
+            writer.write({ type: 'text-end', id: 'no-manual' });
+          },
+        });
+        return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': '0' } });
+      }
+    }
+
     const { messages } = await req.json();
 
     const latestMessage = messages[messages.length - 1]?.parts
@@ -42,7 +75,7 @@ export async function POST(req: Request) {
           messages: [
             {
               role: 'system',
-              content: 'You are classifying messages for a Bavaria C50 sailing yacht assistant. The user is already talking to a boat assistant, so short or vague questions are likely about the boat. Reply YES if the message could plausibly be a question about a boat, its systems, equipment, maintenance, navigation, electronics, or sailing in general. Reply NO only if the message is clearly not boat-related — for example pure greetings like "Hi" or "Hello", or completely unrelated topics like cooking, sports, or math. When in doubt, reply YES.',
+              content: `You are classifying messages for a ${boatName} sailing yacht assistant. The user is already talking to a boat assistant, so short or vague questions are likely about the boat. Reply YES if the message could plausibly be a question about a boat, its systems, equipment, maintenance, navigation, electronics, or sailing in general. Reply NO only if the message is clearly not boat-related — for example pure greetings like "Hi" or "Hello", or completely unrelated topics like cooking, sports, or math. When in doubt, reply YES.`,
             },
             { role: 'user', content: latestMessage },
           ],
@@ -59,7 +92,7 @@ export async function POST(req: Request) {
               writer.write({
                 type: 'text-delta',
                 id: 'off-topic',
-                delta: "I'm SailSmart, your Bavaria C50 assistant. I can only help with questions about the Bavaria C50 yacht. Please ask me something about the boat!",
+                delta: `I'm SailSmart, your ${boatName} assistant. I can only help with questions about your yacht. Please ask me something about the boat!`,
               });
               writer.write({ type: 'text-end', id: 'off-topic' });
             },
@@ -95,6 +128,7 @@ export async function POST(req: Request) {
           query_embedding: embedding,
           match_threshold: 0.2,
           match_count: 15,
+          filter_boat_type_id: boatTypeId,
         });
 
         if (error) {
@@ -123,7 +157,7 @@ export async function POST(req: Request) {
           writer.write({
             type: 'text-delta',
             id: 'not-found',
-            delta: "I cannot find information about that in the official Bavaria C50 manual. If you have a specific question about another aspect of the yacht, I'm happy to help!",
+            delta: `I cannot find information about that in the official ${boatName} manual. If you have a specific question about another aspect of the yacht, I'm happy to help!`,
           });
           writer.write({ type: 'text-end', id: 'not-found' });
         },
@@ -132,15 +166,15 @@ export async function POST(req: Request) {
     }
 
     // 4. Construct system prompt
-    const systemPrompt = `You are SailSmart, a helpful and expert assistant for the Bavaria C50 sailing yacht. 
+    const systemPrompt = `You are SailSmart, a helpful and expert assistant for the ${boatName} sailing yacht.
 You will be provided with context from the official manual to answer the user's question.
 
-CRITICAL INSTRUCTION: You are strictly limited to answering questions related to the Bavaria C50 sailing yacht using ONLY the provided manual context. 
+CRITICAL INSTRUCTION: You are strictly limited to answering questions related to the ${boatName} sailing yacht using ONLY the provided manual context.
 If a user asks about ANYTHING else (e.g., cars, other companies, general trivia, coding, etc.), you MUST politely decline to answer.
 Do NOT use your general knowledge to answer off-topic questions.
 Even for boat-related questions, you MUST NOT use your general knowledge, external information, or search the web. You must rely SOLELY on the "CONTEXT FROM MANUAL" provided below.
-If the answer to the user's question cannot be found in the provided manual context, you MUST state: "I cannot find information about that in the official Bavaria C50 manual." Do NOT guess or invent an answer.
-Say something like: "I am specifically designed to assist with the Bavaria C50. I cannot answer questions about other topics."
+If the answer to the user's question cannot be found in the provided manual context, you MUST state: "I cannot find information about that in the official ${boatName} manual." Do NOT guess or invent an answer.
+Say something like: "I am specifically designed to assist with the ${boatName}. I cannot answer questions about other topics."
 
 When answering on-topic questions, ALWAYS cite the manual using the exact page numbers provided in the context headers (e.g., if a context block starts with [Page 27]:, you must use 27).
 You MUST format citations as Markdown links pointing to the PDF, like this: [Page X](/Bavaria_C50_Manual.pdf#page=X) where X is the actual page number from the context header.
