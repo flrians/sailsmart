@@ -66,14 +66,14 @@ export async function POST(req: Request) {
     }
 
     // 3. Pre-filter: skip GPT if the best manual match is below the relevance threshold
-    if (topSimilarity < 0.35) {
+    if (topSimilarity < 0.1) {
       const stream = createUIMessageStream({
         execute: ({ writer }) => {
           writer.write({ type: 'text-start', id: 'off-topic' });
           writer.write({
             type: 'text-delta',
             id: 'off-topic',
-            delta: "I'm SailSmart, your Bavaria C50 assistant. Your message doesn't seem to be related to the Bavaria C50 manual. Please ask me about the yacht — for example, engine operation, navigation, safety equipment, or maintenance.",
+            delta: "I'm SailSmart, your Bavaria C50 assistant. I can only help with questions about the Bavaria C50 yacht. Please ask me something about the boat!",
           });
           writer.write({ type: 'text-end', id: 'off-topic' });
         },
