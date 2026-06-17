@@ -19,11 +19,53 @@ export async function POST(req: Request) {
       .map((p: any) => p.text as string)
       .join('') ?? '';
 
+    // 1. Pre-filter: classify whether the message is boat-related before running the full pipeline
+    if (latestMessage) {
+      const classifyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          temperature: 0,
+          max_tokens: 1,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a topic classifier. Reply YES if the message is related to sailing, boats, yachts, marine equipment, the Bavaria C50, or any nautical topic. Reply NO for everything else (greetings, general questions, off-topic content).',
+            },
+            { role: 'user', content: latestMessage },
+          ],
+        }),
+      });
+      if (classifyResponse.ok) {
+        const classifyData = await classifyResponse.json();
+        const verdict = classifyData.choices?.[0]?.message?.content?.trim().toUpperCase();
+        console.log(`[SailSmart] Classifier verdict: ${verdict}`);
+        if (verdict !== 'YES') {
+          const stream = createUIMessageStream({
+            execute: ({ writer }) => {
+              writer.write({ type: 'text-start', id: 'off-topic' });
+              writer.write({
+                type: 'text-delta',
+                id: 'off-topic',
+                delta: "I'm SailSmart, your Bavaria C50 assistant. I can only help with questions about the Bavaria C50 yacht. Please ask me something about the boat!",
+              });
+              writer.write({ type: 'text-end', id: 'off-topic' });
+            },
+          });
+          return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': '0' } });
+        }
+      }
+    }
+
     let contextText = '';
     let topSimilarity = 0;
 
     if (latestMessage) {
-      // 1. Generate an embedding for the user's query
+      // 2. Generate an embedding for the user's query
       const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
         method: 'POST',
         headers: {
@@ -63,22 +105,6 @@ export async function POST(req: Request) {
       } else {
         console.error("Failed to fetch embeddings", await embeddingResponse.text());
       }
-    }
-
-    // 3. Pre-filter: skip GPT if the best manual match is below the relevance threshold
-    if (topSimilarity < 0.1) {
-      const stream = createUIMessageStream({
-        execute: ({ writer }) => {
-          writer.write({ type: 'text-start', id: 'off-topic' });
-          writer.write({
-            type: 'text-delta',
-            id: 'off-topic',
-            delta: "I'm SailSmart, your Bavaria C50 assistant. I can only help with questions about the Bavaria C50 yacht. Please ask me something about the boat!",
-          });
-          writer.write({ type: 'text-end', id: 'off-topic' });
-        },
-      });
-      return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': String(topSimilarity) } });
     }
 
     // 3. Construct system prompt
