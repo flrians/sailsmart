@@ -2,9 +2,11 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { Ship, Send, Anchor } from 'lucide-react';
+import { Ship, Send, Anchor, LogOut } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useRef, useEffect, useState } from 'react';
+import { signOut } from '@/app/actions/auth';
+import { createClient } from '@/lib/supabase/client';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -19,9 +21,19 @@ export default function Home() {
     }),
   });
   const [input, setInput] = useState('');
+  const [firstName, setFirstName] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isLoading = status === 'submitted' || status === 'streaming';
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user?.user_metadata?.first_name) {
+        setFirstName(user.user_metadata.first_name as string);
+      }
+    });
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -48,6 +60,14 @@ export default function Home() {
         <div className={styles.logo}>
           <Anchor size={28} color="#0077BE" />
           SailSmart
+        </div>
+        <div className={styles.headerRight}>
+          {firstName && <span className={styles.userName}>Hi, {firstName}</span>}
+          <form action={signOut}>
+            <button type="submit" className={styles.logoutBtn} title="Sign out">
+              <LogOut size={18} />
+            </button>
+          </form>
         </div>
       </header>
 

@@ -1,17 +1,25 @@
 import { streamText, convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse } from 'ai';
 import { openai } from '@ai-sdk/openai';
-import { createClient } from '@supabase/supabase-js';
+import { createClient as createSupabaseAdmin } from '@supabase/supabase-js';
+import { createClient as createAuthClient } from '@/lib/supabase/server';
 
-// Initialize Supabase client
+// Admin client for vector search (service role bypasses RLS — only used server-side)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createSupabaseAdmin(supabaseUrl, supabaseKey);
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
+    // Auth guard: reject unauthenticated requests
+    const authClient = await createAuthClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    if (!user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const { messages } = await req.json();
 
     const latestMessage = messages[messages.length - 1]?.parts

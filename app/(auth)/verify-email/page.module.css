@@ -1,0 +1,61 @@
+.main {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #e2e8f0;
+}
+
+.card {
+  width: 100%;
+  max-width: 430px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  letter-spacing: -0.5px;
+}
+
+.iconWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  opacity: 0.85;
+}
+
+.title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.body {
+  font-size: 0.975rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.note {
+  font-size: 0.875rem;
+  color: #94A3B8;
+}
+
+.note a {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
