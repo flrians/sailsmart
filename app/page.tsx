@@ -1,13 +1,23 @@
 "use client";
 
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { Ship, Send, Anchor } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useRef, useEffect, useState } from 'react';
 import styles from './page.module.css';
 
 export default function Home() {
-  const { messages, sendMessage, status } = useChat();
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({
+      fetch: async (input, init) => {
+        const response = await fetch(input, init);
+        const score = response.headers.get('X-Similarity-Score');
+        console.log(`[SailSmart] Similarity score: ${score ?? 'n/a'}`);
+        return response;
+      },
+    }),
+  });
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

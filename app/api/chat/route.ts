@@ -78,7 +78,7 @@ export async function POST(req: Request) {
           writer.write({ type: 'text-end', id: 'off-topic' });
         },
       });
-      return createUIMessageStreamResponse({ stream });
+      return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': String(topSimilarity) } });
     }
 
     // 3. Construct system prompt
@@ -110,7 +110,7 @@ ${contextText}
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
     });
-    return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse({ headers: { 'X-Similarity-Score': String(topSimilarity) } });
   } catch (error) {
     console.error('Chat error:', error);
     return new Response('An error occurred during chat processing.', { status: 500 });
