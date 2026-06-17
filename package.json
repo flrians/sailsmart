@@ -9,18 +9,27 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.71",
+    "@ai-sdk/react": "^3.0.208",
+    "@supabase/supabase-js": "^2.108.2",
+    "ai": "^6.0.206",
+    "dotenv": "^17.4.2",
+    "lucide-react": "^1.18.0",
     "next": "16.2.9",
+    "openai": "^6.42.0",
+    "pdf-parse": "^1.1.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

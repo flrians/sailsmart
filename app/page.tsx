@@ -1,65 +1,126 @@
-import Image from "next/image";
+"use client";
+
+import { useChat } from '@ai-sdk/react';
+import { Ship, Send, Anchor } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { useRef, useEffect, useState } from 'react';
+import styles from './page.module.css';
 
 export default function Home() {
+  const { messages, sendMessage, status } = useChat({
+    api: '/api/chat',
+  });
+  const [input, setInput] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!input.trim() || isLoading) return;
+    sendMessage({ text: input });
+    setInput('');
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      <header className={styles.header}>
+        <div className={styles.logo}>
+          <Anchor size={28} color="#0077BE" />
+          SailSmart
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </header>
+
+      <div className={styles.chatContainer}>
+        {messages?.length === 0 || !messages ? (
+          <div className={`${styles.emptyState} animate-fade-in`}>
+            <Ship size={64} color="#0077BE" strokeWidth={1.5} />
+            <h2>Welcome aboard!</h2>
+            <p>
+              I am your SailSmart assistant. Ask me anything about the Bavaria C50 manual—from connecting to Bluetooth to changing the engine oil.
+            </p>
+          </div>
+        ) : (
+          <div className={styles.messagesArea}>
+            {messages?.map((m) => {
+              const displayContent = m.content || (m.parts && m.parts.length > 0 ? m.parts.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('') : '');
+              return (
+                <div
+                  key={m.id}
+                  className={`${styles.messageWrapper} ${
+                    m.role === 'user' ? styles.messageUser : styles.messageAssistant
+                  }`}
+                >
+                  <div className={styles.messageBubble}>
+                    {m.role === 'user' ? (
+                      <p>{displayContent}</p>
+                    ) : (
+                      <ReactMarkdown
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a {...props} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'underline', fontWeight: '500'}} />
+                          )
+                        }}
+                      >
+                        {displayContent}
+                      </ReactMarkdown>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+            {isLoading && (
+              <div className={`${styles.messageWrapper} ${styles.messageAssistant}`}>
+                <div className={styles.messageBubble} style={{ opacity: 0.7 }}>
+                  <em>Thinking...</em>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        <div className={styles.inputArea}>
+          <form onSubmit={handleSubmit} className={styles.inputForm}>
+            <textarea
+              className={styles.textarea}
+              value={input || ''}
+              placeholder="Ask a question about the Bavaria C50..."
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (!input?.trim() || isLoading) return;
+                  const form = e.currentTarget.form;
+                  if (form && typeof form.requestSubmit === 'function') {
+                    form.requestSubmit();
+                  }
+                }
+              }}
+              rows={1}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <button
+              type="submit"
+              className={styles.submitBtn}
+              disabled={isLoading || !input?.trim()}
+            >
+              <Send size={20} />
+            </button>
+          </form>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

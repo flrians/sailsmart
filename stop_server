@@ -1,0 +1,5 @@
+#!/bin/bash
+cd "$(dirname "$0")" || exit
+
+echo "Stopping Next.js dev server..."
+pkill -f "next dev" && echo "Server stopped." || echo "No server process found."
