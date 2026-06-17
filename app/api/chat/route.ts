@@ -1,4 +1,4 @@
-import { streamText, convertToModelMessages } from 'ai';
+import { streamText, convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { createClient } from '@supabase/supabase-js';
 
@@ -20,10 +20,10 @@ export async function POST(req: Request) {
       .join('') ?? '';
 
     let contextText = '';
+    let topSimilarity = 0;
 
     if (latestMessage) {
-      // 1. Generate an embedding for the user's query using OpenAI REST directly or ai-sdk
-      // For ai-sdk, we can use openai.embedding model, but since we need the raw vector for Supabase:
+      // 1. Generate an embedding for the user's query
       const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
         method: 'POST',
         headers: {
@@ -52,7 +52,8 @@ export async function POST(req: Request) {
         }
 
         if (!error && chunks && chunks.length > 0) {
-          console.log(`Found ${chunks.length} chunks from Supabase.`);
+          topSimilarity = chunks[0].similarity ?? 0;
+          console.log(`Found ${chunks.length} chunks. Top similarity: ${topSimilarity.toFixed(3)}`);
           contextText = chunks
             .map((chunk: any) => `[Page ${chunk.page_number}]: ${chunk.content}`)
             .join('\n\n---\n\n');
@@ -62,6 +63,22 @@ export async function POST(req: Request) {
       } else {
         console.error("Failed to fetch embeddings", await embeddingResponse.text());
       }
+    }
+
+    // 3. Pre-filter: skip GPT if the best manual match is below the relevance threshold
+    if (topSimilarity < 0.35) {
+      const stream = createUIMessageStream({
+        execute: ({ writer }) => {
+          writer.write({ type: 'text-start', id: 'off-topic' });
+          writer.write({
+            type: 'text-delta',
+            id: 'off-topic',
+            delta: "I'm SailSmart, your Bavaria C50 assistant. Your message doesn't seem to be related to the Bavaria C50 manual. Please ask me about the yacht — for example, engine operation, navigation, safety equipment, or maintenance.",
+          });
+          writer.write({ type: 'text-end', id: 'off-topic' });
+        },
+      });
+      return createUIMessageStreamResponse({ stream });
     }
 
     // 3. Construct system prompt
