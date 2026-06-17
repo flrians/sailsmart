@@ -107,7 +107,23 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Construct system prompt
+    // 3. If no manual context found, return honest "not in manual" response without calling GPT
+    if (!contextText) {
+      const stream = createUIMessageStream({
+        execute: ({ writer }) => {
+          writer.write({ type: 'text-start', id: 'not-found' });
+          writer.write({
+            type: 'text-delta',
+            id: 'not-found',
+            delta: "I cannot find information about that in the official Bavaria C50 manual. If you have a specific question about another aspect of the yacht, I'm happy to help!",
+          });
+          writer.write({ type: 'text-end', id: 'not-found' });
+        },
+      });
+      return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': String(topSimilarity) } });
+    }
+
+    // 4. Construct system prompt
     const systemPrompt = `You are SailSmart, a helpful and expert assistant for the Bavaria C50 sailing yacht. 
 You will be provided with context from the official manual to answer the user's question.
 
@@ -121,7 +137,7 @@ Say something like: "I am specifically designed to assist with the Bavaria C50. 
 When answering on-topic questions, ALWAYS cite the manual using the exact page numbers provided in the context headers (e.g., if a context block starts with [Page 27]:, you must use 27).
 You MUST format citations as Markdown links pointing to the PDF, like this: [Page X](/Bavaria_C50_Manual.pdf#page=X) where X is the actual page number from the context header.
 Do NOT confuse item numbers (like "1. LED light") with page numbers. Only use the number from the [Page X] indicator.
-For example: "To connect to Bluetooth, turn on the receiver ([Page 12](/Bavaria_C50_Manual.pdf#page=12))."
+IMPORTANT: Never use the citation format example above as real information. Only cite pages that actually appear in the CONTEXT FROM MANUAL section below.
 
 Be extremely polite, maintain a nautical tone when appropriate, and be concise but comprehensive.
 
