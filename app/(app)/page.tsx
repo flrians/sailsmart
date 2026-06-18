@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
+import { getSessionMessages } from '@/app/actions/chat';
 import ChatClient from './ChatClient';
 
 const adminClient = createAdminClient(
@@ -7,8 +8,14 @@ const adminClient = createAdminClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export default async function ChatPage() {
+export default async function ChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session?: string }>;
+}) {
   const supabase = await createClient();
+  const params = await searchParams;
+  const sessionId = params.session ?? null;
 
   const [{ data: { user } }, { data: profileData }] = await Promise.all([
     supabase.auth.getUser(),
@@ -27,5 +34,19 @@ export default async function ChatPage() {
     hasManual = (count ?? 0) > 0;
   }
 
-  return <ChatClient hasManual={hasManual} boatName={boatName} />;
+  // Load existing messages if resuming a session
+  let initialMessages: { id: string; role: string; content: string }[] = [];
+  if (sessionId) {
+    initialMessages = await getSessionMessages(sessionId);
+  }
+
+  return (
+    <ChatClient
+      key={sessionId ?? 'new'}
+      hasManual={hasManual}
+      boatName={boatName}
+      sessionId={sessionId}
+      initialMessages={initialMessages}
+    />
+  );
 }

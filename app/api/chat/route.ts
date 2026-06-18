@@ -23,12 +23,13 @@ export async function POST(req: Request) {
     // Fetch user's boat type for manual filtering
     const { data: profile } = await supabase
       .from('profiles')
-      .select('boat_type_id, boat_types(name)')
+      .select('boat_type_id, boat_types(name, engine_model)')
       .eq('id', user.id)
       .single();
 
     const boatTypeId: string | null = (profile as any)?.boat_type_id ?? null;
     const boatName: string = (profile as any)?.boat_types?.name ?? 'Bavaria C50';
+    const engineModel: string | null = (profile as any)?.boat_types?.engine_model ?? null;
 
     // Check if any manual chunks exist for this boat type before running any API calls
     if (boatTypeId) {
@@ -60,50 +61,10 @@ export async function POST(req: Request) {
       .map((p: any) => p.text as string)
       .join('') ?? '';
 
-    // 1. Pre-filter: classify whether the message is boat-related before running the full pipeline
-    if (latestMessage) {
-      const classifyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          temperature: 0,
-          max_tokens: 1,
-          messages: [
-            {
-              role: 'system',
-              content: `You are classifying messages for a ${boatName} sailing yacht assistant. The user is already talking to a boat assistant, so short or vague questions are likely about the boat. Reply YES if the message could plausibly be a question about a boat, its systems, equipment, maintenance, navigation, electronics, or sailing in general. Reply NO only if the message is clearly not boat-related — for example pure greetings like "Hi" or "Hello", or completely unrelated topics like cooking, sports, or math. When in doubt, reply YES.`,
-            },
-            { role: 'user', content: latestMessage },
-          ],
-        }),
-      });
-      if (classifyResponse.ok) {
-        const classifyData = await classifyResponse.json();
-        const verdict = classifyData.choices?.[0]?.message?.content?.trim().toUpperCase();
-        console.log(`[SailSmart] Classifier verdict: ${verdict}`);
-        if (verdict !== 'YES') {
-          const stream = createUIMessageStream({
-            execute: ({ writer }) => {
-              writer.write({ type: 'text-start', id: 'off-topic' });
-              writer.write({
-                type: 'text-delta',
-                id: 'off-topic',
-                delta: `I'm SailSmart, your ${boatName} assistant. I can only help with questions about your yacht. Please ask me something about the boat!`,
-              });
-              writer.write({ type: 'text-end', id: 'off-topic' });
-            },
-          });
-          return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': '0' } });
-        }
-      }
-    }
-
     let contextText = '';
     let topSimilarity = 0;
+    let sourceFilenames: string[] = [];
+    let queryEmbedding: number[] | null = null;
 
     if (latestMessage) {
       // 2. Generate an embedding for the user's query
@@ -122,6 +83,7 @@ export async function POST(req: Request) {
       if (embeddingResponse.ok) {
         const embeddingData = await embeddingResponse.json();
         const embedding = embeddingData.data[0].embedding;
+        queryEmbedding = embedding;
 
         // 2. Perform similarity search in Supabase
         const { data: chunks, error } = await supabase.rpc('match_manual_chunks', {
@@ -138,8 +100,21 @@ export async function POST(req: Request) {
         if (!error && chunks && chunks.length > 0) {
           topSimilarity = chunks[0].similarity ?? 0;
           console.log(`Found ${chunks.length} chunks. Top similarity: ${topSimilarity.toFixed(3)}`);
+
+          // Always resolve filename from DB — never trust the RPC return alone
+          const manualIds = [...new Set(chunks.map((c: any) => c.manual_id as string))];
+          const { data: manualRows } = await supabase
+            .from('manuals')
+            .select('id, filename')
+            .in('id', manualIds);
+          const filenameMap: Record<string, string> = Object.fromEntries(
+            (manualRows ?? []).map((m: any) => [m.id, m.filename])
+          );
+          chunks.forEach((c: any) => { c.filename = filenameMap[c.manual_id] ?? c.filename ?? 'manual.pdf'; });
+          sourceFilenames = [...new Set<string>(chunks.map((c: any) => c.filename as string).filter(Boolean))];
+
           contextText = chunks
-            .map((chunk: any) => `[Page ${chunk.page_number}]: ${chunk.content}`)
+            .map((chunk: any) => `[Page ${chunk.page_number} — ${chunk.filename}]: ${chunk.content}`)
             .join('\n\n---\n\n');
         } else {
           console.log("No relevant chunks found in Supabase for the query.");
@@ -149,15 +124,36 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. If no manual context found, return honest "not in manual" response without calling GPT
+    // 3. If no manual context found, find the closest page and link directly to it
     if (!contextText) {
+      let pageLink = '';
+      if (queryEmbedding && boatTypeId) {
+        // Search with threshold 0 to always get the best-guess page regardless of similarity
+        const { data: bestChunks } = await supabase.rpc('match_manual_chunks', {
+          query_embedding: queryEmbedding,
+          match_threshold: 0,
+          match_count: 1,
+          filter_boat_type_id: boatTypeId,
+        });
+        if (bestChunks && bestChunks.length > 0) {
+          const best = bestChunks[0];
+          const { data: manualRow } = await supabase
+            .from('manuals')
+            .select('title, filename')
+            .eq('id', best.manual_id)
+            .single();
+          if (manualRow) {
+            pageLink = ` You can view it directly here: [${manualRow.title} — Page ${best.page_number}](/${manualRow.filename}#page=${best.page_number})`;
+          }
+        }
+      }
       const stream = createUIMessageStream({
         execute: ({ writer }) => {
           writer.write({ type: 'text-start', id: 'not-found' });
           writer.write({
             type: 'text-delta',
             id: 'not-found',
-            delta: `I cannot find information about that in the official ${boatName} manual. If you have a specific question about another aspect of the yacht, I'm happy to help!`,
+            delta: `This information may be a diagram or chart that I cannot read from the PDF.${pageLink}`,
           });
           writer.write({ type: 'text-end', id: 'not-found' });
         },
@@ -165,21 +161,26 @@ export async function POST(req: Request) {
       return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': String(topSimilarity) } });
     }
 
+
     // 4. Construct system prompt
-    const systemPrompt = `You are SailSmart, a helpful and expert assistant for the ${boatName} sailing yacht.
-You will be provided with context from the official manual to answer the user's question.
+    const systemPrompt = `You are SailSmart, a helpful and expert assistant for the ${boatName} sailing yacht.${engineModel ? ` The boat is fitted with a ${engineModel} engine.` : ''}
+You will be provided with context from the official manuals to answer the user's question.
 
-CRITICAL INSTRUCTION: You are strictly limited to answering questions related to the ${boatName} sailing yacht using ONLY the provided manual context.
-If a user asks about ANYTHING else (e.g., cars, other companies, general trivia, coding, etc.), you MUST politely decline to answer.
-Do NOT use your general knowledge to answer off-topic questions.
-Even for boat-related questions, you MUST NOT use your general knowledge, external information, or search the web. You must rely SOLELY on the "CONTEXT FROM MANUAL" provided below.
-If the answer to the user's question cannot be found in the provided manual context, you MUST state: "I cannot find information about that in the official ${boatName} manual." Do NOT guess or invent an answer.
-Say something like: "I am specifically designed to assist with the ${boatName}. I cannot answer questions about other topics."
+CRITICAL INSTRUCTION: You are strictly limited to answering questions related to the ${boatName} sailing yacht and its systems using ONLY the provided manual context.
+If the user's message is clearly off-topic (e.g. cooking, sports, coding, unrelated companies), respond with: "I'm SailSmart, your ${boatName} assistant. I can only help with questions about your yacht!"
+Do NOT use your general knowledge to answer any questions — rely SOLELY on the "CONTEXT FROM MANUAL" provided below.
+If the answer to the user's question cannot be found in the provided manual context (e.g. it is a diagram, image, or chart), respond with exactly this format:
+"This appears to be a diagram or visual in the manual that I cannot read. You can view it directly here: [Page X](/<filename>#page=X)"
+Use the page number and filename from the most relevant context block. Do NOT say you cannot find it without providing this link.
 
-When answering on-topic questions, ALWAYS cite the manual using the exact page numbers provided in the context headers (e.g., if a context block starts with [Page 27]:, you must use 27).
-You MUST format citations as Markdown links pointing to the PDF, like this: [Page X](/Bavaria_C50_Manual.pdf#page=X) where X is the actual page number from the context header.
-Do NOT confuse item numbers (like "1. LED light") with page numbers. Only use the number from the [Page X] indicator.
-IMPORTANT: Never use the citation format example above as real information. Only cite pages that actually appear in the CONTEXT FROM MANUAL section below.
+CITATION RULES — follow exactly:
+- Every context block starts with a header like: [Page 27 — somefile.pdf]
+- When you cite something, use ONLY the page number and filename from that exact header
+- Format: [Page X](/<filename>#page=X) — where X and <filename> come verbatim from the header
+- The ONLY valid filenames in this session are: ${sourceFilenames.map(f => `"${f}"`).join(', ')}
+- NEVER use any other filename. NEVER invent or guess a filename.
+- NEVER use a page number that appears inside the text content itself (e.g. from a table of contents or a page footer). The ONLY valid page number is the one in the [Page X] header.
+- Do NOT confuse list item numbers, figure numbers, or section numbers with page numbers. Only the number in [Page X] is the page number.
 
 Be extremely polite, maintain a nautical tone when appropriate, and be concise but comprehensive.
 
