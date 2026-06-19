@@ -28,7 +28,6 @@ export async function saveMessage(
   sessionId: string,
   role: 'user' | 'assistant',
   content: string,
-  isFirst = false,
 ) {
   const supabase = await createClient();
 
@@ -36,19 +35,67 @@ export async function saveMessage(
     .from('chat_messages')
     .insert({ session_id: sessionId, role, content });
 
-  // Set session title from the first user message
-  if (isFirst && role === 'user') {
-    const title = content.length > 60 ? content.slice(0, 57) + '…' : content;
-    await supabase
-      .from('chat_sessions')
-      .update({ title, updated_at: new Date().toISOString() })
-      .eq('id', sessionId);
-  } else {
-    await supabase
-      .from('chat_sessions')
-      .update({ updated_at: new Date().toISOString() })
-      .eq('id', sessionId);
-  }
+  await supabase
+    .from('chat_sessions')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('id', sessionId);
+}
+
+export async function generateSessionTitle(sessionId: string): Promise<void> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: session } = await supabase
+    .from('chat_sessions')
+    .select('id, title')
+    .eq('id', sessionId)
+    .eq('user_id', user.id)
+    .single();
+
+  if (!session || session.title) return;
+
+  const { data: messages } = await supabase
+    .from('chat_messages')
+    .select('role, content')
+    .eq('session_id', sessionId)
+    .order('created_at', { ascending: true })
+    .limit(6);
+
+  if (!messages || messages.length === 0) return;
+
+  const conversation = messages
+    .map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+    .join('\n');
+
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'Generate a short conversation headline (4–7 words, no trailing punctuation) that summarises what this boat-related conversation is about. Reply with only the headline.',
+        },
+        { role: 'user', content: conversation },
+      ],
+      max_tokens: 20,
+    }),
+  });
+
+  if (!res.ok) return;
+  const data = await res.json();
+  const title: string | undefined = data.choices?.[0]?.message?.content?.trim();
+  if (!title) return;
+
+  await supabase
+    .from('chat_sessions')
+    .update({ title })
+    .eq('id', sessionId);
 }
 
 export async function getSessions() {
@@ -62,7 +109,30 @@ export async function getSessions() {
     .eq('user_id', user.id)
     .order('updated_at', { ascending: false });
 
-  return data ?? [];
+  const sessions = data ?? [];
+  const noTitleIds = sessions.filter((s) => !s.title).map((s) => s.id);
+
+  if (noTitleIds.length === 0) return sessions;
+
+  const { data: firstMsgs } = await supabase
+    .from('chat_messages')
+    .select('session_id, content')
+    .in('session_id', noTitleIds)
+    .eq('role', 'user')
+    .order('created_at', { ascending: true });
+
+  const firstMsgMap = new Map<string, string>();
+  for (const msg of firstMsgs ?? []) {
+    if (!firstMsgMap.has(msg.session_id)) {
+      const raw = msg.content as string;
+      firstMsgMap.set(msg.session_id, raw.length > 60 ? raw.slice(0, 57) + '…' : raw);
+    }
+  }
+
+  return sessions.map((s) => ({
+    ...s,
+    title: s.title ?? firstMsgMap.get(s.id) ?? null,
+  }));
 }
 
 export async function getSessionMessages(sessionId: string) {

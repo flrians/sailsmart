@@ -6,17 +6,17 @@ import styles from './page.module.css';
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  const dateLabel = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
 
   if (diffDays === 0) {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} · ${dateLabel}`;
   } else if (diffDays === 1) {
-    return 'Yesterday';
+    return `Yesterday · ${dateLabel}`;
   } else if (diffDays < 7) {
-    return date.toLocaleDateString([], { weekday: 'long' });
+    return `${date.toLocaleDateString('en-US', { weekday: 'long' })} · ${dateLabel}`;
   } else {
-    return date.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 }
 

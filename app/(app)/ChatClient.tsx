@@ -6,7 +6,7 @@ import { Ship, Send, Plus, MessageCircle, ChevronRight, Loader2 } from 'lucide-r
 import ReactMarkdown from 'react-markdown';
 import { useRef, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { createSession, saveMessage, getSessions, getSessionMessages } from '@/app/actions/chat';
+import { createSession, saveMessage, generateSessionTitle, getSessions, getSessionMessages } from '@/app/actions/chat';
 import styles from './page.module.css';
 
 type StoredMessage = { id: string; role: string; content: string };
@@ -24,10 +24,11 @@ function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   const now = new Date();
   const diffDays = Math.floor((now.getTime() - date.getTime()) / 86400000);
-  if (diffDays === 0) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return date.toLocaleDateString([], { weekday: 'long' });
-  return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
+  const dateLabel = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+  if (diffDays === 0) return `${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} · ${dateLabel}`;
+  if (diffDays === 1) return `Yesterday · ${dateLabel}`;
+  if (diffDays < 7) return `${date.toLocaleDateString('en-US', { weekday: 'long' })} · ${dateLabel}`;
+  return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 export default function ChatClient({
@@ -46,6 +47,7 @@ export default function ChatClient({
   const sessionIdRef = useRef<string | null>(initialSessionId);
   const savedIdsRef = useRef<Set<string>>(new Set(storedMessages.map((m) => m.id)));
   const messageCountRef = useRef(storedMessages.length);
+  const titleGeneratedRef = useRef(storedMessages.length > 0);
 
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -82,6 +84,7 @@ export default function ChatClient({
     (async () => {
       const sid = sessionIdRef.current;
       if (!sid) return;
+      let savedAssistant = false;
       for (const msg of newMessages) {
         if (savedIdsRef.current.has(msg.id)) continue;
         const content = msg.parts
@@ -91,8 +94,13 @@ export default function ChatClient({
         if (!content) continue;
         await saveMessage(sid, msg.role as 'user' | 'assistant', content);
         savedIdsRef.current.add(msg.id);
+        if (msg.role === 'assistant') savedAssistant = true;
       }
       messageCountRef.current = messages.length;
+      if (savedAssistant && !titleGeneratedRef.current) {
+        titleGeneratedRef.current = true;
+        generateSessionTitle(sid);
+      }
     })();
   }, [status]);
 
