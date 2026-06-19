@@ -8,6 +8,17 @@ import { useRef, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSession, saveMessage, generateSessionTitle, getSessions, getSessionMessages } from '@/app/actions/chat';
 import styles from './page.module.css';
+import PdfPageModal from './PdfPageModal';
+
+function parsePdfLink(href?: string, linkText?: string): { filename: string; page: number } | null {
+  if (!href || /^https?:\/\//i.test(href)) return null;
+  const m = href.match(/([^/#?]+\.pdf)(?:#page=(\d+))?/i);
+  if (!m) return null;
+  const pageFromHash = m[2] ? parseInt(m[2], 10) : null;
+  if (pageFromHash) return { filename: m[1], page: pageFromHash };
+  const pageInText = linkText?.match(/\bpage\s+(\d+)\b/i);
+  return { filename: m[1], page: pageInText ? parseInt(pageInText[1], 10) : 1 };
+}
 
 type StoredMessage = { id: string; role: string; content: string };
 type Session = { id: string; title: string | null; updated_at: string };
@@ -61,7 +72,31 @@ export default function ChatClient({
   });
 
   const [input, setInput] = useState('');
+  const [pdfModal, setPdfModal] = useState<{ filename: string; page: number; autoScroll?: boolean } | null>(null);
   const [activeTab, setActiveTab] = useState<'chat' | 'conversations'>('chat');
+
+  // Restore PDF viewer from URL on page load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pdf = params.get('pdf');
+    const pdfPage = params.get('pdfPage');
+    if (pdf && pdfPage) setPdfModal({ filename: pdf, page: parseInt(pdfPage, 10) });
+  }, []);
+
+  // Sync PDF modal state to URL so a refresh re-opens it.
+  // Always sets autoScroll: true — only link clicks go through here.
+  const openPdfModal = (modal: { filename: string; page: number } | null) => {
+    setPdfModal(modal ? { ...modal, autoScroll: true } : null);
+    const url = new URL(window.location.href);
+    if (modal) {
+      url.searchParams.set('pdf', modal.filename);
+      url.searchParams.set('pdfPage', String(modal.page));
+    } else {
+      url.searchParams.delete('pdf');
+      url.searchParams.delete('pdfPage');
+    }
+    window.history.replaceState(null, '', url.toString());
+  };
   const [sessions, setSessions] = useState<Session[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [pendingMessages, setPendingMessages] = useState<ReturnType<typeof toUIMessages> | null>(null);
@@ -75,6 +110,10 @@ export default function ChatClient({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [effectiveMessages]);
+
+  useEffect(() => {
+    if (pdfModal) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [pdfModal]);
 
   // Persist new messages once streaming is complete
   useEffect(() => {
@@ -195,14 +234,33 @@ export default function ChatClient({
                       ) : (
                         <ReactMarkdown
                           components={{
-                            a: ({ node, ...props }) => (
-                              <a
-                                {...props}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ textDecoration: 'underline', fontWeight: '500' }}
-                              />
-                            ),
+                            a: ({ node, ...props }) => {
+                              const linkText = typeof props.children === 'string'
+                                ? props.children
+                                : Array.isArray(props.children)
+                                ? (props.children as any[]).filter((c) => typeof c === 'string').join('')
+                                : '';
+                              const pdf = parsePdfLink(props.href, linkText);
+                              if (pdf) {
+                                return (
+                                  <a
+                                    href={props.href}
+                                    onClick={(e) => { e.preventDefault(); openPdfModal(pdf); }}
+                                    style={{ textDecoration: 'underline', fontWeight: '500', cursor: 'pointer' }}
+                                  >
+                                    {props.children}
+                                  </a>
+                                );
+                              }
+                              return (
+                                <a
+                                  {...props}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{ textDecoration: 'underline', fontWeight: '500' }}
+                                />
+                              );
+                            },
                           }}
                         >
                           {displayContent}
@@ -217,6 +275,16 @@ export default function ChatClient({
                   <div className={styles.messageBubble} style={{ opacity: 0.7 }}>
                     <em>Thinking...</em>
                   </div>
+                </div>
+              )}
+              {pdfModal && (
+                <div className={`${styles.messageWrapper} ${styles.messageAssistant}`}>
+                  <PdfPageModal
+                    filename={pdfModal.filename}
+                    page={pdfModal.page}
+                    autoScroll={pdfModal.autoScroll ?? false}
+                    onClose={() => openPdfModal(null)}
+                  />
                 </div>
               )}
               <div ref={messagesEndRef} />

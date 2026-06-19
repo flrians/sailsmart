@@ -64,7 +64,6 @@ export async function POST(req: Request) {
     let contextText = '';
     let topSimilarity = 0;
     let sourceFilenames: string[] = [];
-    let queryEmbedding: number[] | null = null;
 
     if (latestMessage) {
       // 2. Generate an embedding for the user's query
@@ -83,8 +82,6 @@ export async function POST(req: Request) {
       if (embeddingResponse.ok) {
         const embeddingData = await embeddingResponse.json();
         const embedding = embeddingData.data[0].embedding;
-        queryEmbedding = embedding;
-
         // 2. Perform similarity search in Supabase
         const { data: chunks, error } = await supabase.rpc('match_manual_chunks', {
           query_embedding: embedding,
@@ -124,41 +121,20 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. If no manual context found, find the closest page and link directly to it
+    // 3. If no manual context found, tell the user it's not covered
     if (!contextText) {
-      let pageLink = '';
-      if (queryEmbedding && boatTypeId) {
-        // Search with threshold 0 to always get the best-guess page regardless of similarity
-        const { data: bestChunks } = await supabase.rpc('match_manual_chunks', {
-          query_embedding: queryEmbedding,
-          match_threshold: 0,
-          match_count: 1,
-          filter_boat_type_id: boatTypeId,
-        });
-        if (bestChunks && bestChunks.length > 0) {
-          const best = bestChunks[0];
-          const { data: manualRow } = await supabase
-            .from('manuals')
-            .select('title, filename')
-            .eq('id', best.manual_id)
-            .single();
-          if (manualRow) {
-            pageLink = ` You can view it directly here: [${manualRow.title} — Page ${best.page_number}](/${manualRow.filename}#page=${best.page_number})`;
-          }
-        }
-      }
       const stream = createUIMessageStream({
         execute: ({ writer }) => {
           writer.write({ type: 'text-start', id: 'not-found' });
           writer.write({
             type: 'text-delta',
             id: 'not-found',
-            delta: `This information may be a diagram or chart that I cannot read from the PDF.${pageLink}`,
+            delta: `I'm sorry, this information is not covered in the current manuals available for your ${boatName}.`,
           });
           writer.write({ type: 'text-end', id: 'not-found' });
         },
       });
-      return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': String(topSimilarity) } });
+      return createUIMessageStreamResponse({ stream, headers: { 'X-Similarity-Score': '0' } });
     }
 
 
@@ -176,7 +152,7 @@ Use the page number and filename from the most relevant context block. Do NOT sa
 CITATION RULES — follow exactly:
 - Every context block starts with a header like: [Page 27 — somefile.pdf]
 - When you cite something, use ONLY the page number and filename from that exact header
-- Format: [Page X](/<filename>#page=X) — where X and <filename> come verbatim from the header
+- Format: [Page X](/<filename>#page=X) — where X and <filename> come verbatim from the header. ALWAYS include #page=X. NEVER omit it.
 - The ONLY valid filenames in this session are: ${sourceFilenames.map(f => `"${f}"`).join(', ')}
 - NEVER use any other filename. NEVER invent or guess a filename.
 - NEVER use a page number that appears inside the text content itself (e.g. from a table of contents or a page footer). The ONLY valid page number is the one in the [Page X] header.
