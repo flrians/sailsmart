@@ -7,6 +7,7 @@ Usage:
   python3 scripts/process_scanned_manual.py <pdf_path>
       --title "Manual Title"
       --boat-type-name "Bavaria C50"
+      --boat-type-name "Bavaria C42"   # repeatable — links to multiple boat types
       [--engine-model "Yanmar 4JH80"]
 """
 
@@ -61,7 +62,7 @@ def get_boat_type_id(boat_type_name):
     return result.data["id"]
 
 
-def embed_and_store(chunks, manual_id, boat_type_id):
+def embed_and_store(chunks, manual_id):
     BATCH = 50
     total = 0
     for i in range(0, len(chunks), BATCH):
@@ -72,7 +73,6 @@ def embed_and_store(chunks, manual_id, boat_type_id):
         records = [
             {
                 "manual_id": manual_id,
-                "boat_type_id": boat_type_id,
                 "page_number": batch[j]["page"],
                 "content": texts[j],
                 "embedding": emb.data[j].embedding,
@@ -88,7 +88,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("pdf_path")
     parser.add_argument("--title", default=None)
-    parser.add_argument("--boat-type-name", default=None)
+    parser.add_argument("--boat-type-name", action="append", default=[], dest="boat_type_names",
+                        help="Boat type to link this manual to. Repeatable.")
     parser.add_argument("--engine-model", default=None)
     args = parser.parse_args()
 
@@ -99,14 +100,18 @@ def main():
         print(f"Error: file not found: {pdf_path}", file=sys.stderr)
         sys.exit(1)
 
-    boat_type_id = None
-    if args.boat_type_name:
-        boat_type_id = get_boat_type_id(args.boat_type_name)
-        print(f"Boat type: {args.boat_type_name} ({boat_type_id})")
+    # Resolve all boat type IDs
+    boat_type_ids = []
+    for name in args.boat_type_names:
+        bt_id = get_boat_type_id(name)
+        boat_type_ids.append(bt_id)
+        print(f"Boat type: {name} ({bt_id})")
+        if args.engine_model:
+            supabase.table("boat_types").update({"engine_model": args.engine_model}).eq("id", bt_id).execute()
+            print(f"Engine model set for {name}: {args.engine_model}")
 
-    if args.engine_model and boat_type_id:
-        supabase.table("boat_types").update({"engine_model": args.engine_model}).eq("id", boat_type_id).execute()
-        print(f"Engine model set: {args.engine_model}")
+    if not args.boat_type_names:
+        print("Warning: no --boat-type-name provided. Manual will not be linked to any boat type.", file=sys.stderr)
 
     doc = fitz.open(pdf_path)
     total_pages = len(doc)
@@ -140,12 +145,19 @@ def main():
     result = supabase.table("manuals").insert({
         "title": title,
         "filename": os.path.basename(pdf_path),
-        "boat_type_id": boat_type_id,
     }).execute()
     manual_id = result.data[0]["id"]
     print(f"Manual record created: {manual_id}")
 
-    stored = embed_and_store(chunks, manual_id, boat_type_id)
+    # Link to all specified boat types via junction table
+    if boat_type_ids:
+        supabase.table("manual_boat_types").insert([
+            {"manual_id": manual_id, "boat_type_id": bt_id}
+            for bt_id in boat_type_ids
+        ]).execute()
+        print(f"Linked to {len(boat_type_ids)} boat type(s).")
+
+    stored = embed_and_store(chunks, manual_id)
     print(f"\nDone! Stored {stored} chunks for '{title}'.")
 
 

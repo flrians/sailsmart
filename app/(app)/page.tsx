@@ -28,8 +28,8 @@ export default async function ChatPage({
   let hasManual = false;
   if (boatTypeId) {
     const { count } = await adminClient
-      .from('manual_chunks')
-      .select('id', { count: 'exact', head: true })
+      .from('manual_boat_types')
+      .select('manual_id', { count: 'exact', head: true })
       .eq('boat_type_id', boatTypeId);
     hasManual = (count ?? 0) > 0;
   }

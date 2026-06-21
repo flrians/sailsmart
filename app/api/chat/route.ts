@@ -34,8 +34,8 @@ export async function POST(req: Request) {
     // Check if any manual chunks exist for this boat type before running any API calls
     if (boatTypeId) {
       const { count } = await supabase
-        .from('manual_chunks')
-        .select('id', { count: 'exact', head: true })
+        .from('manual_boat_types')
+        .select('manual_id', { count: 'exact', head: true })
         .eq('boat_type_id', boatTypeId);
 
       if (!count || count === 0) {

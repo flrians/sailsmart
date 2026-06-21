@@ -22,43 +22,57 @@ global.WebSocket = require('ws');
 const supabase = createClient(supabaseUrl, supabaseKey);
 const openai = new OpenAI({ apiKey: openaiKey });
 
-// CLI: <pdf-path> [--title <title>] [--boat-type-name <name>] [--engine-model <model>]
+// CLI: <pdf-path> [--title <title>] [--boat-type-name <name>] (repeatable) [--engine-model <model>]
 const args = process.argv.slice(2);
 const PDF_PATH = args[0];
-if (!PDF_PATH) { console.error('Usage: node process_manual.mjs <pdf-path> [--title ...] [--boat-type-name ...] [--engine-model ...]'); process.exit(1); }
+if (!PDF_PATH) {
+  console.error('Usage: node process_manual.mjs <pdf-path> [--title ...] [--boat-type-name ...] [--engine-model ...]');
+  console.error('  --boat-type-name can be repeated to link one manual to multiple boat types.');
+  process.exit(1);
+}
 
 function getArg(flag) {
   const idx = args.indexOf(flag);
   return idx !== -1 ? args[idx + 1] : null;
 }
 
-const MANUAL_TITLE    = getArg('--title') || path.basename(PDF_PATH, path.extname(PDF_PATH));
-const BOAT_TYPE_NAME  = getArg('--boat-type-name');
-const ENGINE_MODEL    = getArg('--engine-model'); // optional: sets boat_types.engine_model
+function getAllArgs(flag) {
+  const values = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === flag && args[i + 1]) values.push(args[i + 1]);
+  }
+  return values;
+}
+
+const MANUAL_TITLE   = getArg('--title') || path.basename(PDF_PATH, path.extname(PDF_PATH));
+const BOAT_TYPE_NAMES = getAllArgs('--boat-type-name');
+const ENGINE_MODEL   = getArg('--engine-model');
 
 async function processManual() {
   try {
-    let boatTypeId = null;
-    if (BOAT_TYPE_NAME) {
+    // Resolve all boat type IDs
+    const boatTypeIds = [];
+    for (const name of BOAT_TYPE_NAMES) {
       const { data: boatType, error } = await supabase
         .from('boat_types')
         .select('id')
-        .eq('name', BOAT_TYPE_NAME)
+        .eq('name', name)
         .single();
       if (error || !boatType) {
-        console.error(`Boat type "${BOAT_TYPE_NAME}" not found:`, error?.message);
+        console.error(`Boat type "${name}" not found:`, error?.message);
         process.exit(1);
       }
-      boatTypeId = boatType.id;
-      console.log(`Boat type: ${BOAT_TYPE_NAME} (${boatTypeId})`);
-    } else {
-      console.warn('No --boat-type-name provided. Chunks will not be linked to a boat type.');
+      boatTypeIds.push(boatType.id);
+      console.log(`Boat type: ${name} (${boatType.id})`);
+
+      if (ENGINE_MODEL) {
+        await supabase.from('boat_types').update({ engine_model: ENGINE_MODEL }).eq('id', boatType.id);
+        console.log(`Engine model set for ${name}: ${ENGINE_MODEL}`);
+      }
     }
 
-    // Store engine model if provided
-    if (ENGINE_MODEL && boatTypeId) {
-      await supabase.from('boat_types').update({ engine_model: ENGINE_MODEL }).eq('id', boatTypeId);
-      console.log(`Engine model set: ${ENGINE_MODEL}`);
+    if (BOAT_TYPE_NAMES.length === 0) {
+      console.warn('No --boat-type-name provided. Manual will not be linked to any boat type.');
     }
 
     console.log(`Parsing ${PDF_PATH}...`);
@@ -74,10 +88,19 @@ async function processManual() {
 
     const { data: manual, error: manualError } = await supabase
       .from('manuals')
-      .insert({ title: MANUAL_TITLE, filename: path.basename(PDF_PATH), boat_type_id: boatTypeId })
+      .insert({ title: MANUAL_TITLE, filename: path.basename(PDF_PATH) })
       .select()
       .single();
     if (manualError) throw manualError;
+
+    // Link manual to all specified boat types via junction table
+    if (boatTypeIds.length > 0) {
+      const { error: junctionError } = await supabase
+        .from('manual_boat_types')
+        .insert(boatTypeIds.map(boat_type_id => ({ manual_id: manual.id, boat_type_id })));
+      if (junctionError) throw junctionError;
+      console.log(`Linked to ${boatTypeIds.length} boat type(s).`);
+    }
 
     const BATCH_SIZE = 100;
     for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
@@ -91,7 +114,6 @@ async function processManual() {
 
       const records = batch.map((content, idx) => ({
         manual_id: manual.id,
-        boat_type_id: boatTypeId,
         page_number: 1,
         content,
         embedding: embeddingResponse.data[idx].embedding,
