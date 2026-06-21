@@ -1,40 +1,231 @@
 .container {
   flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Fallback state ── */
+.fallbackContainer {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 1.25rem;
-}
-
-.title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.text {
+.fallbackText {
   font-size: 1rem;
   color: var(--text-secondary);
+  text-align: center;
   line-height: 1.6;
   max-width: 260px;
 }
 
-.badge {
-  display: inline-block;
+/* ── Hero card ── */
+.heroCard {
+  padding: 1.25rem;
+}
+
+.heroContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.boatName {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.engineBadge {
+  display: inline-flex;
+  align-items: center;
   background: var(--accent-light);
   color: var(--accent-blue);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 119, 190, 0.25);
+  letter-spacing: 0.02em;
+  align-self: flex-start;
+}
+
+/* ── Section wrapper ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  padding-left: 0.25rem;
+}
+
+/* ── Specs card ── */
+.specsCard {
+  padding: 0.25rem 0;
+}
+
+.specRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+}
+
+.iconWrap {
+  width: 34px;
+  height: 34px;
+  background: var(--accent-light);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.specField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.specLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.specValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 0 1.25rem;
+}
+
+/* ── Section header with inline action ── */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  transition: background var(--transition-fast);
+}
+
+.editBtn:hover {
+  background: var(--accent-light);
+}
+
+/* ── Selected config display ── */
+.configCard {
+  overflow: hidden;
+  padding: 0;
+}
+
+.configImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.configMeta {
+  padding: 0.75rem 1rem;
+}
+
+.configLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ── Selector grid wrapper ── */
+.selectorCard {
+  padding: 1rem;
+}
+
+.selectorPrompt {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
+}
+
+.cancelBtn {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.6rem;
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.4rem 1rem;
-  border-radius: var(--radius-full);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: none;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.cancelBtn:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+/* ── SVG layout card ── */
+.svgCard {
+  padding: 1.25rem 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.svgWrap {
+  width: 100%;
+  max-width: 260px;
+}
+
+.svgCaption {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  opacity: 0.7;
 }

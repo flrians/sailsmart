@@ -23,3 +23,19 @@ export async function updateBoatType(prevState: ProfileState, formData: FormData
   revalidatePath('/profile');
   return { success: true };
 }
+
+export async function updateConfiguration(configId: string): Promise<ProfileState> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not authenticated.' };
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ configuration: configId })
+    .eq('id', user.id);
+
+  if (error) return { error: error.message };
+
+  revalidatePath('/my-c50');
+  return { success: true };
+}
