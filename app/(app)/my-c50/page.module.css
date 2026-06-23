@@ -42,11 +42,11 @@
 }
 
 .boatName {
-  font-size: 1.375rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  line-height: 1.2;
+  text-align: center;
 }
 
 .engineBadge {
@@ -88,19 +88,7 @@
 .specRow {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 1.25rem;
-}
-
-.iconWrap {
-  width: 34px;
-  height: 34px;
-  background: var(--accent-light);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  padding: 1rem 1.25rem;
 }
 
 .specField {
@@ -112,15 +100,17 @@
 }
 
 .specLabel {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .specValue {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .divider {
@@ -163,9 +153,24 @@
   padding: 0;
 }
 
-.configImage {
+/* Portrait wrapper: declares the rotated aspect ratio so layout is correct */
+.configImageWrap {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 908 / 2410;
+  position: relative;
+  overflow: hidden;
+  background-color: #f5f8fa;
+}
+
+/* Image wider than container — after 90° CCW rotation visual width = container width */
+.configImage {
+  width: 265.6%;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  display: block;
 }
 
 .configMeta {

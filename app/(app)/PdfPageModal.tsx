@@ -32,7 +32,10 @@ function PdfPage({ pdfDoc, pageNumber, width }: { pdfDoc: any; pageNumber: numbe
       try {
         const pdfPage = await pdfDoc.getPage(pageNumber);
         if (cancelled) return;
-        const scale = width / pdfPage.getViewport({ scale: 1 }).width;
+        const naturalWidth = pdfPage.getViewport({ scale: 1 }).width;
+        // Oversample 3× so the browser's downscale produces sharp sub-pixel lines.
+        // Cap the canvas at 5000px wide to avoid excessive memory at high zoom levels.
+        const scale = Math.min((width / naturalWidth) * 3, 5000 / naturalWidth);
         const viewport = pdfPage.getViewport({ scale });
         if (cancelled || !canvasRef.current) return;
         canvasRef.current.width = viewport.width;
@@ -57,7 +60,7 @@ function PdfFullScreen({ pdfDoc, numPages, startPage, onClose }: {
   onClose: () => void;
 }) {
   const [zoom, setZoom] = useState(1);
-  const baseWidth = Math.min(window.innerWidth - 32, 800);
+  const baseWidth = window.innerWidth - 32;
   const pageWidth = Math.round(baseWidth * zoom);
   const targetRef = useRef<HTMLDivElement>(null);
   const pageNumbers = Array.from(

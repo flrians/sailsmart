@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, Ruler, Weight, Wind, Gauge, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import type { BoatSpec } from '@/lib/boat-specs';
 import { BAVARIA_C50_CONFIGS } from '@/lib/boat-specs';
 import BoatSVG from './BoatSVG';
 import ConfigSelector from './ConfigSelector';
 import styles from './page.module.css';
-
-const SPEC_ICONS = [Ruler, Ruler, Gauge, Weight, Wind];
 
 interface Props {
   boatName: string;
@@ -22,43 +20,30 @@ export default function MyC50Client({ boatName, engineModel, spec, configuration
   const [editingConfig, setEditingConfig] = useState(!configuration);
 
   const selectedVariant = BAVARIA_C50_CONFIGS.find(c => c.id === activeConfig) ?? null;
+  const allSpecs = engineModel
+    ? [{ label: 'Engine', value: engineModel }, ...spec.specs]
+    : spec.specs;
 
   return (
     <div className={styles.container}>
       {/* Header */}
-      <div className={`${styles.heroCard} glass-panel`}>
-        <div className={styles.heroContent}>
-          <Anchor size={28} color="#0077BE" strokeWidth={1.5} />
-          <div className={styles.heroText}>
-            <h1 className={styles.boatName}>{boatName}</h1>
-            {engineModel && (
-              <span className={styles.engineBadge}>{engineModel}</span>
-            )}
-          </div>
-        </div>
-      </div>
+      <h1 className={styles.boatName}>{boatName}</h1>
 
       {/* Key Specs */}
       <div className={styles.section}>
         <p className={styles.sectionTitle}>Key Specs</p>
         <div className={`${styles.specsCard} glass-panel`}>
-          {spec.specs.map((row, i) => {
-            const Icon = SPEC_ICONS[i] ?? Ruler;
-            return (
-              <div key={row.label}>
-                <div className={styles.specRow}>
-                  <div className={styles.iconWrap}>
-                    <Icon size={16} color="#0077BE" strokeWidth={2} />
-                  </div>
-                  <div className={styles.specField}>
-                    <span className={styles.specLabel}>{row.label}</span>
-                    <span className={styles.specValue}>{row.value}</span>
-                  </div>
+          {allSpecs.map((row, i) => (
+            <div key={row.label}>
+              <div className={styles.specRow}>
+                <div className={styles.specField}>
+                  <span className={styles.specLabel}>{row.label}</span>
+                  <span className={styles.specValue}>{row.value}</span>
                 </div>
-                {i < spec.specs.length - 1 && <div className={styles.divider} />}
               </div>
-            );
-          })}
+              {i < allSpecs.length - 1 && <div className={styles.divider} />}
+            </div>
+          ))}
         </div>
       </div>
 
@@ -79,23 +64,19 @@ export default function MyC50Client({ boatName, engineModel, spec, configuration
         </div>
 
         {!editingConfig && selectedVariant ? (
-          /* Selected configuration display */
           <div className={`${styles.configCard} glass-panel`}>
-            <div
-              className={styles.configImage}
-              style={{
-                backgroundImage: "url('/bavaria_c50_configurations.png')",
-                backgroundSize: `${3 * 100}% ${(4 / 0.72) * 100}%`,
-                backgroundPosition: `${(selectedVariant.col / 2) * 100}% ${(selectedVariant.row / (4 - 0.72)) * 100}%`,
-                backgroundRepeat: 'no-repeat',
-              }}
-            />
+            <div className={styles.configImageWrap}>
+              <img
+                src={`/api/c50-config/${selectedVariant.id}`}
+                alt={selectedVariant.label}
+                className={styles.configImage}
+              />
+            </div>
             <div className={styles.configMeta}>
               <span className={styles.configLabel}>{selectedVariant.label}</span>
             </div>
           </div>
         ) : (
-          /* Configuration selector grid */
           <div className={`${styles.selectorCard} glass-panel`}>
             {!selectedVariant && (
               <p className={styles.selectorPrompt}>Select your boat's interior configuration:</p>

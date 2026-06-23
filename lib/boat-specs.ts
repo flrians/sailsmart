@@ -19,24 +19,20 @@ export type ConfigVariant = {
   id: string;
   label: string;
   cabins: number;
-  row: number;
-  col: number;
 };
 
-// 11 Bavaria C50 interior configurations in the order they appear in the brochure grid
-// Image sprite: public/bavaria_c50_configurations.png — 3 columns × 4 rows
 export const BAVARIA_C50_CONFIGS: ConfigVariant[] = [
-  { id: 'A1-B1-C1-D1-E2', label: '3-Cabin (A1-B1-C1-D1-E2)', cabins: 3, row: 0, col: 0 },
-  { id: 'A1-B1-C1-D3-E2', label: '3-Cabin (A1-B1-C1-D3-E2)', cabins: 3, row: 0, col: 1 },
-  { id: 'A1-B1-C1-D2-E2', label: '4-Cabin (A1-B1-C1-D2-E2)', cabins: 4, row: 0, col: 2 },
-  { id: 'A1-B2-C1-D1-E2', label: '4-Cabin (A1-B2-C1-D1-E2)', cabins: 4, row: 1, col: 0 },
-  { id: 'A1-B2-C1-D3-E2', label: '4-Cabin (A1-B2-C1-D3-E2)', cabins: 4, row: 1, col: 1 },
-  { id: 'A2-B1-C1-D1-E2', label: '4-Cabin (A2-B1-C1-D1-E2)', cabins: 4, row: 1, col: 2 },
-  { id: 'A2-B2-C1-D3-E2', label: '4-Cabin (A2-B2-C1-D3-E2)', cabins: 4, row: 2, col: 0 },
-  { id: 'A2-B1-C1-D3-E2', label: '4-Cabin (A2-B1-C1-D3-E2)', cabins: 4, row: 2, col: 1 },
-  { id: 'A1-B2-C1-D2-E2', label: '5-Cabin (A1-B2-C1-D2-E2)', cabins: 5, row: 2, col: 2 },
-  { id: 'A2-B2-C1-D1-E2', label: '5-Cabin (A2-B2-C1-D1-E2)', cabins: 5, row: 3, col: 0 },
-  { id: 'A2-B2-C1-D2-E2', label: '6-Cabin (A2-B2-C1-D2-E2)', cabins: 6, row: 3, col: 1 },
+  { id: 'A1-B1-C1-D1-E2', label: '3-Cabin (A1-B1-C1-D1-E2)', cabins: 3 },
+  { id: 'A1-B1-C1-D3-E2', label: '3-Cabin (A1-B1-C1-D3-E2)', cabins: 3 },
+  { id: 'A1-B1-C1-D2-E2', label: '4-Cabin (A1-B1-C1-D2-E2)', cabins: 4 },
+  { id: 'A1-B2-C1-D1-E2', label: '4-Cabin (A1-B2-C1-D1-E2)', cabins: 4 },
+  { id: 'A1-B2-C1-D3-E2', label: '4-Cabin (A1-B2-C1-D3-E2)', cabins: 4 },
+  { id: 'A2-B1-C1-D1-E2', label: '4-Cabin (A2-B1-C1-D1-E2)', cabins: 4 },
+  { id: 'A2-B2-C1-D3-E2', label: '4-Cabin (A2-B2-C1-D3-E2)', cabins: 4 },
+  { id: 'A2-B1-C1-D3-E2', label: '4-Cabin (A2-B1-C1-D3-E2)', cabins: 4 },
+  { id: 'A1-B2-C1-D2-E2', label: '5-Cabin (A1-B2-C1-D2-E2)', cabins: 5 },
+  { id: 'A2-B2-C1-D1-E2', label: '5-Cabin (A2-B2-C1-D1-E2)', cabins: 5 },
+  { id: 'A2-B2-C1-D2-E2', label: '6-Cabin (A2-B2-C1-D2-E2)', cabins: 6 },
 ];
 
 export const BOAT_SPECS: Record<string, BoatSpec> = {
