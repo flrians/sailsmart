@@ -13,8 +13,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className={styles.shell}>
       <header className={styles.header}>
         <div className={styles.logo}>
-          <Anchor size={28} color="#0077BE" />
-          SailSmart
+          <Anchor size={20} color="#0077BE" strokeWidth={1.75} />
+          <span className={styles.wordmark}>
+            <span className={styles.logoSail}>Sail</span><span className={styles.logoSmart}>Smart</span>
+          </span>
         </div>
         <div className={styles.headerRight}>
           {firstName && <span className={styles.userName}>Hi, {firstName}</span>}
