@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 40" width="190" height="40" role="img" aria-label="SailSmart">
+  <title>SailSmart</title>
+  <defs>
+    <style><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700&display=swap');
+    ]]></style>
+  </defs>
+
+  <!-- Anchor icon: 24×24, centered vertically in the 40px height (y-offset 8) -->
+  <g transform="translate(0, 8)" fill="none" stroke="#0077BE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="5" r="3"/>
+    <line x1="12" y1="8" x2="12" y2="22"/>
+    <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+  </g>
+
+  <!-- Wordmark: "Sail" bold / "Smart" light -->
+  <text x="32" y="27" font-family="Outfit, system-ui, -apple-system, sans-serif" font-size="20" fill="#003366">
+    <tspan font-weight="700">Sail</tspan><tspan font-weight="300" fill="#0077BE">Smart</tspan>
+  </text>
+</svg>

@@ -15,8 +15,10 @@ export default function RegisterForm({ boatTypes }: { boatTypes: BoatType[] }) {
     <main className={styles.main}>
       <div className={`${styles.card} glass-panel animate-fade-in`}>
         <div className={styles.logoRow}>
-          <Anchor size={28} color="#0077BE" />
-          <span className={styles.logoText}>SailSmart</span>
+          <Anchor size={22} color="#0077BE" strokeWidth={1.75} />
+          <span className={styles.logoText}>
+            <span className={styles.logoTextSail}>Sail</span><span className={styles.logoTextSmart}>Smart</span>
+          </span>
         </div>
         <h1 className={styles.title}>Create Account</h1>
         <p className={styles.subtitle}>Join your yacht assistant</p>

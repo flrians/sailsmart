@@ -1,10 +1,11 @@
 .container {
   flex: 1;
   overflow-y: auto;
-  padding: 1.25rem 1rem 1.5rem;
+  padding: 1.125rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.125rem;
+  background: var(--bg);
 }
 
 /* ── Fallback state ── */
@@ -17,16 +18,16 @@
 }
 
 .fallbackText {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.65;
   max-width: 260px;
 }
 
 /* ── Hero card ── */
 .heroCard {
-  padding: 1.25rem;
+  padding: 1.375rem 1.25rem;
 }
 
 .heroContent {
@@ -38,7 +39,7 @@
 .heroText {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.375rem;
 }
 
 .boatName {
@@ -47,19 +48,20 @@
   color: var(--text-primary);
   margin: 0;
   text-align: center;
+  letter-spacing: -0.025em;
 }
 
 .engineBadge {
   display: inline-flex;
   align-items: center;
-  background: var(--accent-light);
-  color: var(--accent-blue);
-  font-size: 0.75rem;
+  background: var(--sky);
+  color: var(--ocean);
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
+  padding: 0.22rem 0.7rem;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(0, 119, 190, 0.25);
-  letter-spacing: 0.02em;
+  border: 1px solid rgba(0, 119, 190, 0.2);
+  letter-spacing: 0.03em;
   align-self: flex-start;
 }
 
@@ -71,13 +73,15 @@
 }
 
 .sectionTitle {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--ocean);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   margin: 0;
-  padding-left: 0.25rem;
+  padding-left: 0.875rem;
+  border-left: 2px solid var(--ocean);
+  line-height: 1;
 }
 
 /* ── Specs card ── */
@@ -88,7 +92,7 @@
 .specRow {
   display: flex;
   align-items: center;
-  padding: 1rem 1.25rem;
+  padding: 0.9rem 1.25rem;
 }
 
 .specField {
@@ -101,16 +105,18 @@
 
 .specLabel {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--mediterranean);
   font-weight: 400;
 }
 
 .specValue {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-primary);
   text-align: right;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .divider {
@@ -124,7 +130,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 0.25rem;
+  padding-left: 0;
   padding-right: 0.25rem;
 }
 
@@ -134,7 +140,7 @@
   gap: 0.3rem;
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--accent-blue);
+  color: var(--ocean);
   background: none;
   border: none;
   cursor: pointer;
@@ -144,7 +150,7 @@
 }
 
 .editBtn:hover {
-  background: var(--accent-light);
+  background: var(--sky);
 }
 
 /* ── Selected config display ── */
@@ -153,16 +159,14 @@
   padding: 0;
 }
 
-/* Portrait wrapper: declares the rotated aspect ratio so layout is correct */
 .configImageWrap {
   width: 100%;
   aspect-ratio: 908 / 2410;
   position: relative;
   overflow: hidden;
-  background-color: #f5f8fa;
+  background-color: #eef3f8;
 }
 
-/* Image wider than container — after 90° CCW rotation visual width = container width */
 .configImage {
   width: 265.6%;
   height: auto;
@@ -174,48 +178,48 @@
 }
 
 .configMeta {
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 1rem;
 }
 
 .configLabel {
-  font-size: 0.875rem;
+  font-size: 0.855rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 /* ── Selector grid wrapper ── */
 .selectorCard {
-  padding: 1rem;
+  padding: 0.875rem;
 }
 
 .selectorPrompt {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
+  color: var(--mediterranean);
   margin: 0 0 0.75rem;
 }
 
 .cancelBtn {
   margin-top: 0.75rem;
   width: 100%;
-  padding: 0.6rem;
-  font-size: 0.8rem;
+  padding: 0.55rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--mediterranean);
   background: none;
   border: 1.5px solid var(--border-light);
   border-radius: 10px;
   cursor: pointer;
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .cancelBtn:hover {
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
+  border-color: var(--ocean);
+  color: var(--ocean);
 }
 
 /* ── SVG layout card ── */
 .svgCard {
-  padding: 1.25rem 1rem 0.75rem;
+  padding: 1.25rem 1rem 0.875rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -228,9 +232,10 @@
 }
 
 .svgCaption {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
+  font-size: 0.68rem;
+  color: var(--mediterranean);
   text-align: center;
   margin: 0;
-  opacity: 0.7;
+  opacity: 0.65;
+  letter-spacing: 0.02em;
 }

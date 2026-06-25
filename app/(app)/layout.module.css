@@ -5,31 +5,42 @@
   max-width: 430px;
   width: 100%;
   margin: 0 auto;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  box-shadow: 0 0 50px rgba(0, 51, 102, 0.15);
+  background: var(--bg);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0,0,0,0.07);
   overflow: hidden;
 }
 
 .header {
-  padding: 1rem 1.25rem;
+  padding: 0.875rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--surface);
   border-bottom: 1px solid var(--border-light);
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
   flex-shrink: 0;
   z-index: 10;
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-blue);
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  letter-spacing: -0.5px;
+  gap: 0.5rem;
+  line-height: 1;
+}
+
+.wordmark {
+  letter-spacing: -0.025em;
+}
+
+.logoSail {
+  font-weight: 700;
+  color: var(--deep-sea);
+}
+
+.logoSmart {
+  font-weight: 300;
+  color: var(--ocean);
 }
 
 .headerRight {
@@ -39,26 +50,26 @@
 }
 
 .userName {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--mediterranean);
 }
 
 .logoutBtn {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--mediterranean);
   display: flex;
   align-items: center;
-  padding: 0.4rem;
+  padding: 0.375rem;
   border-radius: 8px;
   transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .logoutBtn:hover {
-  color: var(--accent-blue);
-  background: var(--accent-light);
+  color: var(--ocean);
+  background: var(--sky);
 }
 
 .content {
