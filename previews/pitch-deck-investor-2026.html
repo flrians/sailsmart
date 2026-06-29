@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SailSmart — Investor Pitch Deck 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════════ */
+:root {
+  --navy:      #002952;
+  --navy-deep: #001932;
+  --ocean:     #0077BE;
+  --ocean-mid: #1A8FD1;
+  --med:       #4A90E2;
+  --sky:       #DDEEFF;
+  --mist:      #F0F5FA;
+  --white:     #FFFFFF;
+  --ink:       #002952;
+  --ink-60:    rgba(0,41,82,0.60);
+  --ink-40:    rgba(0,41,82,0.40);
+  --ink-20:    rgba(0,41,82,0.12);
+  --ocean-10:  rgba(0,119,190,0.08);
+  --ocean-20:  rgba(0,119,190,0.15);
+  --ocean-glow:rgba(0,119,190,0.30);
+
+  --f-sans: 'Outfit', system-ui, sans-serif;
+  --f-mono: 'DM Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET + BODY
+═══════════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { font-size: 16px; }
+
+body {
+  background: #08111C;
+  font-family: var(--f-sans);
+  color: var(--ink);
+  padding: 48px 20px 80px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ═══════════════════════════════════════════════════
+   PAGE HEADER
+═══════════════════════════════════════════════════ */
+.deck-header {
+  max-width: 960px;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.deck-header-brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ocean);
+}
+.deck-header-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,.25);
+  letter-spacing: .08em;
+}
+
+/* ═══════════════════════════════════════════════════
+   SLIDE SHELL
+═══════════════════════════════════════════════════ */
+.slide-wrap {
+  max-width: 960px;
+  margin: 0 auto 56px;
+}
+.slide-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.2);
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+.slide {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 24px 64px rgba(0,0,0,.55),
+    0 4px 16px rgba(0,0,0,.3);
+}
+
+/* slide number badge */
+.sn {
+  position: absolute;
+  bottom: 4.5%;
+  right: 5%;
+  font-family: var(--f-mono);
+  font-size: clamp(7px, 0.8vw, 10px);
+  color: var(--ink-40);
+  letter-spacing: .1em;
+}
+.sn-light { color: rgba(255,255,255,.22); }
+
+/* ═══════════════════════════════════════════════════
+   TEMPLATE A — FULL-BLEED DARK (Cover / Vision)
+═══════════════════════════════════════════════════ */
+.tmpl-a {
+  background: var(--navy-deep);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 8% 10%;
+}
+
+/* layered ocean depth background */
+.tmpl-a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(0,119,190,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 20%, rgba(0,41,82,.4) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* thin horizon line */
+.tmpl-a::after {
+  content: '';
+  position: absolute;
+  bottom: 28%;
+  left: 8%; right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,119,190,.25), transparent);
+  pointer-events: none;
+}
+
+.tmpl-a .logo-mark {
+  font-size: clamp(9px, 1.1vw, 13px);
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ocean);
+  margin-bottom: 7%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tmpl-a h1 {
+  font-size: clamp(22px, 3.8vw, 46px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.14;
+  max-width: 82%;
+  position: relative;
+  letter-spacing: -.01em;
+}
+
+.tmpl-a h1 .accent {
+  color: var(--ocean-mid);
+}
+
+.tmpl-a .sub {
+  font-size: clamp(10px, 1.35vw, 16px);
+  font-weight: 300;
+  color: rgba(74,144,226,.75);
+  margin-top: 3.5%;
+  max-width: 68%;
+  line-height: 1.65;
+  position: relative;
+}
+
+.tmpl-a .footer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  padding: 0 7% 4%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: clamp(7px, 0.82vw, 10px);
+}
+.tmpl-a .footer-bar .contact { color: rgba(255,255,255,.45); }
+.tmpl-a .footer-bar .status {
+  font-family: var(--f-mono);
+  color: var(--ocean);
+  opacity: .65;
+  letter-spacing: .08em;
+}
+
+/* ═══════════════════════════════════════════════════
+   TEMPLATE B — WHITE CONTENT
+═══════════════════════════════════════════════════ */
+.tmpl-b {
+  background: var(--white);
+  padding: 6.5% 7% 5.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-tag {
+  font-size: clamp(6.5px, 0.78vw, 9.5px);
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ocean);
+  margin-bottom: 1.8%;
+}
+
+.slide-title {
+  font-size: clamp(15px, 2.2vw, 27px);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.18;
+  letter-spacing: -.01em;
+  padding-bottom: 2.8%;
+  border-bottom: 1.5px solid var(--ink-20);
+  margin-bottom: 3.5%;
+}
+
+.body-layout {
+  flex: 1;
+  display: flex;
+  gap: 5%;
+  min-height: 0;
+}
+.body-left  { flex: 1.1; display: flex; flex-direction: column; gap: 3%; }
+.body-right { flex: 1;   display: flex; align-items: center; justify-content: center; }
+
+/* ═══════════════════════════════════════════════════
+   TEMPLATE C — MIST / DATA
+═══════════════════════════════════════════════════ */
+.tmpl-c {
+  background: var(--mist);
+  padding: 6.5% 7% 5.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════════════
+   TEMPLATE D — SPLIT / STATEMENT
+═══════════════════════════════════════════════════ */
+.tmpl-d {
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.split-left {
+  background: var(--navy-deep);
+  padding: 8% 9%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.split-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 80% at 0% 100%, rgba(0,119,190,.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.split-right {
+  padding: 7% 7%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--white);
+}
+
+/* ═══════════════════════════════════════════════════
+   PROBLEM CARDS
+═══════════════════════════════════════════════════ */
+.pain-grid {
+  flex: 1;
+  display: flex;
+  gap: 3%;
+  min-height: 0;
+}
+
+.pain-card {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 5% 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+  box-shadow: 0 2px 12px rgba(0,41,82,.06);
+  transition: border-color .2s;
+}
+
+.pain-card:last-child {
+  border-color: var(--ocean-20);
+  background: linear-gradient(160deg, rgba(0,119,190,.03) 0%, var(--white) 100%);
+}
+
+.pain-icon {
+  width: clamp(28px, 3.5vw, 40px);
+  height: clamp(28px, 3.5vw, 40px);
+  background: var(--mist);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(12px, 1.6vw, 18px);
+  flex-shrink: 0;
+}
+
+.pain-card h3 {
+  font-size: clamp(8px, 1.05vw, 13px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.28;
+}
+
+.pain-card p {
+  font-size: clamp(6.5px, 0.82vw, 10px);
+  color: var(--ink-60);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.pain-card .pain-stat {
+  font-family: var(--f-mono);
+  font-size: clamp(7px, 0.85vw, 10px);
+  color: var(--ocean);
+  font-weight: 500;
+  padding-top: 4%;
+  border-top: 1px solid var(--ink-20);
+  margin-top: auto;
+}
+
+/* ═══════════════════════════════════════════════════
+   FEATURE ROWS
+═══════════════════════════════════════════════════ */
+.feat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4%;
+}
+.feat-row + .feat-row { margin-top: 3.5%; }
+
+.feat-dot {
+  width: 7px; height: 7px; min-width: 7px;
+  background: var(--ocean);
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.feat-row h3 {
+  font-size: clamp(8.5px, 1.05vw, 13px);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2%;
+}
+
+.feat-row p {
+  font-size: clamp(6.5px, 0.82vw, 10px);
+  color: var(--ink-60);
+  line-height: 1.55;
+}
+
+/* ═══════════════════════════════════════════════════
+   KPI TILES
+═══════════════════════════════════════════════════ */
+.kpi-grid {
+  display: flex;
+  gap: 3%;
+  flex: 1;
+  min-height: 0;
+}
+
+.kpi-tile {
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 5% 5%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,41,82,.05);
+}
+
+.kpi-tile .num {
+  font-size: clamp(26px, 4.5vw, 56px);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.kpi-tile .num.ocean { color: var(--ocean); }
+.kpi-tile .num.sky   { color: var(--sky); }
+
+.kpi-tile .kpi-label {
+  font-size: clamp(6.5px, 0.78vw, 9px);
+  font-weight: 700;
+  color: var(--ocean);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-top: 7%;
+}
+
+.kpi-tile .kpi-desc {
+  font-size: clamp(6px, 0.78vw, 9px);
+  color: var(--ink-60);
+  margin-top: 3%;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════
+   APP MOCKUP
+═══════════════════════════════════════════════════ */
+.app-mock {
+  width: 100%;
+  max-width: 92%;
+  background: #F8FBFF;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid var(--ink-20);
+  box-shadow: 0 10px 40px rgba(0,41,82,.13);
+}
+
+.mock-bar {
+  background: var(--navy);
+  height: 9%;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+  gap: 3%;
+}
+
+.mock-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.mock-url {
+  flex: 1;
+  height: 55%;
+  background: rgba(255,255,255,.1);
+  border-radius: 3px;
+  margin: 0 3%;
+}
+
+.mock-body {
+  padding: 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5%;
+}
+
+.chat-bubble {
+  border-radius: 8px;
+  padding: 3.5% 5%;
+  font-size: clamp(6.5px, 0.82vw, 10px);
+  line-height: 1.55;
+  max-width: 86%;
+}
+.chat-bubble.user {
+  background: var(--ocean);
+  color: var(--white);
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+  font-weight: 500;
+}
+.chat-bubble.ai {
+  background: var(--white);
+  color: var(--ink);
+  border: 1.5px solid var(--ink-20);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+.source-chip {
+  display: inline-block;
+  background: var(--sky);
+  color: var(--navy);
+  font-family: var(--f-mono);
+  font-size: clamp(5px, 0.62vw, 7.5px);
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 1.5% 4%;
+  margin-top: 4%;
+}
+
+/* ═══════════════════════════════════════════════════
+   MARKET CIRCLES
+═══════════════════════════════════════════════════ */
+.market-vis {
+  flex: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.market-circles-wrap {
+  position: relative;
+  width: min(100%, 240px);
+  height: min(100%, 240px);
+  aspect-ratio: 1;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.c-tam {
+  width: 100%; height: 100%;
+  background: rgba(0,41,82,.05);
+  border: 1.5px dashed rgba(0,119,190,.25);
+}
+.c-sam {
+  width: 65%; height: 65%;
+  background: rgba(0,119,190,.09);
+  border: 1.5px dashed rgba(0,119,190,.45);
+}
+.c-som {
+  width: 34%; height: 34%;
+  background: var(--ocean);
+  box-shadow: 0 0 24px rgba(0,119,190,.5), 0 0 48px rgba(0,119,190,.2);
+}
+
+.circle-label {
+  position: absolute;
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  font-weight: 600;
+  color: var(--ink-60);
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: .06em;
+}
+
+.c-tam-label { top: 4%; left: 50%; transform: translateX(-50%); color: var(--ink-40); }
+.c-sam-label { top: 20%; left: 50%; transform: translateX(-50%); color: var(--ocean); }
+.c-som-label { color: var(--white); font-size: clamp(5.5px, 0.68vw, 8px); line-height: 1.4; font-weight: 700; text-align: center; }
+
+/* ═══════════════════════════════════════════════════
+   BUSINESS MODEL TIERS
+═══════════════════════════════════════════════════ */
+.tier-row {
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 10px;
+  padding: 3.5% 5%;
+  margin-bottom: 2.5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(0,41,82,.04);
+}
+.tier-row.featured {
+  background: var(--navy);
+  border-color: var(--navy);
+  box-shadow: 0 4px 16px rgba(0,41,82,.25);
+}
+.tier-name {
+  font-size: clamp(8px, 1vw, 12.5px);
+  font-weight: 700;
+  color: var(--ink);
+}
+.tier-row.featured .tier-name { color: var(--white); }
+.tier-sub {
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ink-60);
+  margin-top: 2%;
+}
+.tier-row.featured .tier-sub { color: rgba(255,255,255,.55); }
+.tier-price {
+  font-size: clamp(9px, 1.15vw, 14px);
+  font-weight: 800;
+  color: var(--ocean);
+  letter-spacing: -.01em;
+}
+.tier-row.featured .tier-price { color: var(--sky); }
+
+/* unit economics */
+.ue-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.2% 0;
+  border-bottom: 1px solid var(--ink-20);
+  font-size: clamp(7px, 0.82vw, 10px);
+}
+.ue-row:last-child { border-bottom: none; }
+.ue-key { color: var(--ink-60); }
+.ue-val { font-weight: 700; color: var(--ocean); font-family: var(--f-mono); }
+
+/* ═══════════════════════════════════════════════════
+   COMPETITION MATRIX
+═══════════════════════════════════════════════════ */
+.matrix {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2.5%;
+  position: relative;
+}
+
+.quad {
+  border-radius: 10px;
+  padding: 6% 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 8%;
+  border: 1.5px solid var(--ink-20);
+  background: var(--white);
+}
+.quad.highlight {
+  background: var(--ocean);
+  border-color: var(--ocean);
+  box-shadow: 0 4px 20px rgba(0,119,190,.4);
+}
+
+.q-label {
+  font-size: clamp(7px, 0.88vw, 11px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.quad.highlight .q-label { color: var(--white); }
+
+.q-names {
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ink-60);
+  line-height: 1.5;
+}
+.quad.highlight .q-names { color: rgba(255,255,255,.75); }
+
+.matrix-axis-x {
+  position: absolute;
+  bottom: -9%;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ink-40);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-family: var(--f-mono);
+}
+.matrix-axis-y {
+  position: absolute;
+  left: -6%;
+  top: 0; bottom: 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ink-40);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-family: var(--f-mono);
+}
+
+/* ═══════════════════════════════════════════════════
+   MOAT CARDS
+═══════════════════════════════════════════════════ */
+.moat-grid {
+  flex: 1;
+  display: flex;
+  gap: 3%;
+  min-height: 0;
+}
+
+.moat-card {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 6% 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 5%;
+  box-shadow: 0 2px 10px rgba(0,41,82,.05);
+}
+
+.moat-icon {
+  font-size: clamp(14px, 1.8vw, 22px);
+  margin-bottom: 2%;
+}
+
+.moat-card h3 {
+  font-size: clamp(8.5px, 1.05vw, 13px);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.moat-card p {
+  font-size: clamp(6.5px, 0.78vw, 9.5px);
+  color: var(--ink-60);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.moat-strength {
+  font-family: var(--f-mono);
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ocean);
+  font-weight: 500;
+}
+
+.moat-bar-wrap {
+  height: 3px;
+  background: var(--ink-20);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.moat-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ocean), var(--ocean-mid));
+  border-radius: 3px;
+}
+
+/* ═══════════════════════════════════════════════════
+   GTM PHASES
+═══════════════════════════════════════════════════ */
+.phase-grid {
+  flex: 1;
+  display: flex;
+  gap: 2.5%;
+  min-height: 0;
+}
+
+.phase-card {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 5% 4.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+  box-shadow: 0 2px 10px rgba(0,41,82,.05);
+  position: relative;
+}
+
+.phase-tag {
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--ocean);
+  border-radius: 4px;
+  padding: 2% 6%;
+  display: inline-block;
+  width: fit-content;
+}
+
+.phase-card h3 {
+  font-size: clamp(8.5px, 1.05vw, 13px);
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 2%;
+}
+
+.phase-action {
+  font-size: clamp(6px, 0.75vw, 9px);
+  color: var(--ink-60);
+  line-height: 1.6;
+  display: flex;
+  gap: 5%;
+}
+.phase-action::before {
+  content: '→';
+  color: var(--ocean);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.phase-goal {
+  margin-top: auto;
+  font-family: var(--f-mono);
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  color: var(--ocean);
+  font-weight: 500;
+  padding-top: 4%;
+  border-top: 1px solid var(--ink-20);
+}
+
+.phase-arrow {
+  position: absolute;
+  right: -8%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ocean);
+  font-size: clamp(10px, 1.4vw, 18px);
+  font-weight: 700;
+  z-index: 2;
+  opacity: .5;
+}
+
+/* ═══════════════════════════════════════════════════
+   ROADMAP TIMELINE
+═══════════════════════════════════════════════════ */
+.timeline {
+  display: flex;
+  flex: 1;
+  gap: 2.5%;
+  min-height: 0;
+}
+
+.milestone {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 5% 4.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+  box-shadow: 0 2px 10px rgba(0,41,82,.05);
+  position: relative;
+  overflow: hidden;
+}
+.milestone.active {
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 1px var(--ocean-20), 0 4px 16px rgba(0,119,190,.15);
+}
+.milestone.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ocean);
+  border-radius: 2px 2px 0 0;
+}
+
+.ms-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--mist);
+  border: 2px solid rgba(0,119,190,.3);
+  margin-bottom: 2%;
+}
+.milestone.active .ms-dot {
+  background: var(--ocean);
+  border-color: var(--ocean);
+  box-shadow: 0 0 6px rgba(0,119,190,.5);
+}
+
+.ms-period {
+  font-family: var(--f-mono);
+  font-size: clamp(6.5px, 0.78vw, 9px);
+  font-weight: 500;
+  color: var(--ocean);
+  letter-spacing: .1em;
+}
+
+.ms-title {
+  font-size: clamp(8.5px, 1.05vw, 13px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.3;
+}
+
+.ms-items {
+  font-size: clamp(6px, 0.75vw, 9px);
+  color: var(--ink-60);
+  line-height: 1.65;
+  flex: 1;
+}
+
+.ms-milestone {
+  font-family: var(--f-mono);
+  font-size: clamp(6px, 0.7vw, 8.5px);
+  color: var(--ocean);
+  margin-top: auto;
+  padding-top: 4%;
+  border-top: 1px solid var(--ink-20);
+}
+
+/* ═══════════════════════════════════════════════════
+   FOUNDER AVATAR
+═══════════════════════════════════════════════════ */
+.founder-avatar {
+  width: clamp(60px, 10vw, 118px);
+  height: clamp(60px, 10vw, 118px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ocean-mid) 0%, var(--navy) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(20px, 3.5vw, 44px);
+  font-weight: 200;
+  color: var(--white);
+  flex-shrink: 0;
+  border: 3px solid var(--sky);
+  box-shadow: 0 6px 24px rgba(0,41,82,.2);
+  letter-spacing: .04em;
+}
+
+/* ═══════════════════════════════════════════════════
+   WHY NOW COMPARISON
+═══════════════════════════════════════════════════ */
+.compare-grid {
+  display: flex;
+  gap: 4%;
+  align-items: center;
+  flex: 1;
+}
+
+.compare-col {
+  flex: 1;
+  background: var(--mist);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 6% 6%;
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+  box-shadow: 0 2px 10px rgba(0,41,82,.04);
+}
+.compare-col.now {
+  border-color: var(--ocean);
+  background: rgba(0,119,190,.04);
+  box-shadow: 0 4px 16px rgba(0,119,190,.12);
+}
+
+.compare-year {
+  font-size: clamp(11px, 1.5vw, 18px);
+  font-weight: 800;
+  color: var(--ink-60);
+  letter-spacing: -.01em;
+}
+.compare-col.now .compare-year { color: var(--ocean); }
+
+.compare-item {
+  font-size: clamp(7px, 0.85vw, 10.5px);
+  color: var(--ink-60);
+  line-height: 1.6;
+}
+.compare-item strong { color: var(--ocean); font-weight: 700; }
+
+.compare-arrow {
+  font-size: clamp(18px, 2.5vw, 32px);
+  color: var(--ocean-20);
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   ASK SLIDE
+═══════════════════════════════════════════════════ */
+.ask-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3%;
+  min-height: 0;
+}
+
+.ask-card {
+  background: var(--white);
+  border: 1.5px solid var(--ink-20);
+  border-radius: 12px;
+  padding: 6% 6%;
+  display: flex;
+  flex-direction: column;
+  gap: 5%;
+  box-shadow: 0 2px 10px rgba(0,41,82,.05);
+}
+
+.ask-card.primary {
+  background: var(--navy);
+  border-color: var(--navy);
+  grid-column: span 2;
+  flex-direction: row;
+  align-items: center;
+  gap: 6%;
+}
+
+.ask-amount {
+  font-size: clamp(28px, 4.5vw, 56px);
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -.02em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ask-card h3 {
+  font-size: clamp(8px, 1vw, 12px);
+  font-weight: 700;
+  color: var(--navy);
+}
+.ask-card.primary h3 { color: rgba(255,255,255,.55); font-weight: 500; font-size: clamp(7px, 0.88vw, 11px); text-transform: uppercase; letter-spacing: .12em; }
+
+.ask-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+  flex: 1;
+}
+.ask-card.primary ul { color: rgba(255,255,255,.7); }
+
+.ask-card li {
+  font-size: clamp(7px, 0.85vw, 10.5px);
+  color: var(--ink-60);
+  line-height: 1.5;
+  display: flex;
+  gap: 5%;
+  align-items: flex-start;
+}
+.ask-card.primary li { color: rgba(255,255,255,.75); }
+
+.ask-card li::before {
+  content: '—';
+  color: var(--ocean);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ask-card.primary li::before { color: rgba(255,255,255,.35); }
+
+.ask-card .ask-label {
+  font-size: clamp(6px, 0.72vw, 8.5px);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ocean);
+  margin-bottom: 3%;
+}
+
+/* ═══════════════════════════════════════════════════
+   VISION SLIDE
+═══════════════════════════════════════════════════ */
+.vision-headline {
+  font-size: clamp(20px, 3.5vw, 42px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.18;
+  max-width: 78%;
+  text-align: center;
+  position: relative;
+  letter-spacing: -.01em;
+}
+.vision-headline .accent { color: var(--ocean-mid); }
+
+.vision-sub {
+  font-size: clamp(9px, 1.2vw, 14px);
+  font-weight: 300;
+  color: rgba(74,144,226,.65);
+  margin-top: 4%;
+  position: relative;
+  text-align: center;
+  max-width: 62%;
+  line-height: 1.6;
+}
+
+.vision-contact {
+  position: absolute;
+  bottom: 5%;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+  font-size: clamp(7px, 0.85vw, 10.5px);
+  color: rgba(255,255,255,.4);
+}
+
+.vision-contact .cta {
+  color: var(--ocean);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════
+   DIVIDER LABEL
+═══════════════════════════════════════════════════ */
+.section-divider {
+  max-width: 960px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-divider span {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.15);
+  white-space: nowrap;
+}
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.06);
+}
+
+/* ═══════════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════════ */
+@media print {
+  body { background: #fff; padding: 0; }
+  .slide-wrap { page-break-after: always; margin: 0; }
+  .slide { border-radius: 0; box-shadow: none; }
+  .slide-label, .deck-header, .section-divider { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="deck-header">
+  <div class="deck-header-brand">&#9875; SailSmart</div>
+  <div class="deck-header-meta">Investor Deck &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; Confidential</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     01 · COVER
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">01 / Cover</div>
+  <div class="slide tmpl-a">
+    <div class="logo-mark">&#9875;&nbsp; SailSmart</div>
+    <h1>
+      800 pages of manual.<br>
+      No answer on deck.<br>
+      <span class="accent">SailSmart knows.</span>
+    </h1>
+    <div class="sub">
+      AI-powered technical assistant for Bavaria C50 owners —<br>
+      and soon, for every yacht owner in Europe.
+    </div>
+    <div class="footer-bar">
+      <span class="contact">Florian Stefanides &nbsp;·&nbsp; Founder &nbsp;·&nbsp; f.stefanides@googlemail.com</span>
+      <span class="status">MVP LIVE &nbsp;·&nbsp; BOOTSTRAPPED &nbsp;·&nbsp; JUNE 2026</span>
+    </div>
+    <span class="sn sn-light">01</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     02 · PROBLEM
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">02 / Problem</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">The Problem</div>
+    <div class="slide-title">C50 owners don't know their boat — they guess.</div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">&#128196;</div>
+        <h3>800+ Pages of Manual</h3>
+        <p>Nobody reads it. On the water, under time pressure, on a touchscreen — it's impossible. Critical information is buried.</p>
+        <div class="pain-stat">Avg. time to find an answer: 45+ min</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">&#128201;</div>
+        <h3>11 Cabin Configurations</h3>
+        <p>Which one is mine? What's standard, what's an option? Even experienced owners have to guess — and guess wrong.</p>
+        <div class="pain-stat">Config errors = wrong parts, wrong fixes</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">&#128222;</div>
+        <h3>€150/hr Marine Technician</h3>
+        <p>Not available 24/7, expensive, not scalable for basic knowledge. And they're often not C50 specialists either.</p>
+        <div class="pain-stat">€200k–€300k asset. 2018 PDF for support.</div>
+      </div>
+    </div>
+    <span class="sn">02</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     03 · FOUNDER STORY
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">03 / Founder Story</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Why I Built This</div>
+    <div class="slide-title">I own a Bavaria C50. I lived this problem myself.</div>
+    <div class="body-layout">
+      <div class="body-left">
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>The moment that started it</h3>
+            <p>After my first offshore passage: autopilot behaving oddly, engine warning showing — and I didn't know which cabin configuration my boat had. The manual was 800 pages. I was at sea.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Built it myself in 6 months</h3>
+            <p>No team, no external capital. Full-stack RAG architecture on top of official Bavaria documentation. The answer I needed — for every C50 owner.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>MVP live. Real users. Zero external funding.</h3>
+            <p>Auth, RAG chat, 11 config variants, PDF viewer — production-ready and deployed. The hard part is done.</p>
+          </div>
+        </div>
+      </div>
+      <div class="body-right">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7%; text-align: center;">
+          <div class="founder-avatar">FS</div>
+          <div>
+            <div style="font-size: clamp(11px, 1.4vw, 18px); font-weight: 800; color: var(--navy); letter-spacing: -.01em;">Florian Stefanides</div>
+            <div style="font-size: clamp(8px, 0.95vw, 12px); color: var(--ocean); margin-top: 3%; font-weight: 500;">Founder &amp; Bavaria C50 Owner</div>
+          </div>
+          <div style="background: var(--mist); border-radius: 10px; padding: 5% 6%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ink); opacity: .75; font-style: italic; text-align: left; border-left: 3px solid var(--ocean); line-height: 1.6; max-width: 90%;">
+            "I am the user. I had the problem. I built the solution."
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">03</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     04 · SOLUTION
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">04 / Solution</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">The Solution</div>
+    <div class="slide-title">SailSmart — Your digital on-board specialist</div>
+    <div class="body-layout">
+      <div class="body-left">
+        <div style="font-size: clamp(8px, 0.95vw, 12px); color: var(--ocean); font-weight: 600; margin-bottom: 3%; line-height: 1.5;">RAG-powered AI chat on official Bavaria manuals. With citations. Always available. No hallucinations.</div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>AI Chat with Source Citations</h3>
+            <p>Ask a question → answer from the official manual → link to the exact page. Every response traceable to the source document.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Cabin Configuration Viewer</h3>
+            <p>All 11 C50 variants visualised. Owners select their exact layout — answers adapt accordingly. Eliminates the most common source of confusion.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>PDF Manual Viewer</h3>
+            <p>3× oversampled for retina sharpness, mobile-optimised, full-screen. Every manual immediately accessible — the right page, not just the right document.</p>
+          </div>
+        </div>
+      </div>
+      <div class="body-right">
+        <div class="app-mock">
+          <div class="mock-bar">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#febc2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+            <div class="mock-url"></div>
+          </div>
+          <div class="mock-body">
+            <div class="chat-bubble user">What does warning P07 mean on my Yanmar?</div>
+            <div class="chat-bubble ai">
+              P07 indicates elevated coolant temperature. Check immediately:<br>
+              1. Coolant level in expansion tank<br>
+              2. Sea cock and impeller condition<br>
+              3. Thermostat for blockage
+              <div class="source-chip">&#128196; Bavaria C50 Manual, p. 147</div>
+            </div>
+            <div class="chat-bubble user">Which cabin configuration is my boat?</div>
+            <div class="chat-bubble ai">
+              Select your variant in the Configuration Viewer — I'll tailor all answers to your specific layout.
+              <div class="source-chip">&#128202; 11 variants available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">04</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     05 · WHY NOW
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">05 / Why Now</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Timing</div>
+    <div class="slide-title">The infrastructure cost just crossed the threshold.</div>
+    <div style="flex: 1; display: flex; gap: 5%; min-height: 0; align-items: center;">
+      <div style="flex: 1.2;">
+        <div class="compare-grid" style="height: auto;">
+          <div class="compare-col">
+            <div class="compare-year">2020</div>
+            <div class="compare-item">RAG on documents: <strong>€5,000+/mo</strong> in compute. Infrastructure too expensive for consumer B2C at this price point.</div>
+            <div class="compare-item" style="margin-top: 4%;">LLMs: GPT-3 API only. Accuracy insufficient for technical documentation queries.</div>
+          </div>
+          <div class="compare-arrow">→</div>
+          <div class="compare-col now">
+            <div class="compare-year">2026</div>
+            <div class="compare-item">text-embedding-3-small: <strong>$0.02 / 1M tokens</strong>. GPT-4o-mini: $0.15 input, $0.60 output per 1M.</div>
+            <div class="compare-item" style="margin-top: 4%;"><strong>A single SailSmart query costs ~€0.01</strong>. Quality AI for niche products is now economically viable.</div>
+          </div>
+        </div>
+      </div>
+      <div style="flex: 0.9; display: flex; flex-direction: column; gap: 4%;">
+        <div style="background: var(--mist); border-radius: 12px; padding: 6% 6%; border-left: 3px solid var(--ocean);">
+          <div style="font-size: clamp(7px, 0.85vw, 11px); font-weight: 700; color: var(--navy); margin-bottom: 3%; line-height: 1.4;">The trust moat accrues now</div>
+          <div style="font-size: clamp(6.5px, 0.78vw, 9.5px); color: var(--ink-60); line-height: 1.6;">Whoever builds the trusted knowledge layer for Bavaria owners in 2026 owns that relationship for years. Switching cost = zero data portability.</div>
+        </div>
+        <div style="background: var(--mist); border-radius: 12px; padding: 6% 6%; border-left: 3px solid var(--ocean);">
+          <div style="font-size: clamp(7px, 0.85vw, 11px); font-weight: 700; color: var(--navy); margin-bottom: 3%;">Marina WiFi + iPad usage up 40%</div>
+          <div style="font-size: clamp(6.5px, 0.78vw, 9.5px); color: var(--ink-60); line-height: 1.6;">C50 owners are already tablet-native on the water. The behaviour SailSmart needs already exists — we're meeting it, not creating it.</div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">05</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     06 · MARKET SIZE
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">06 / Market Size</div>
+  <div class="slide tmpl-c">
+    <div class="slide-tag">Market Opportunity</div>
+    <div class="slide-title">A defined beachhead — with a clear path to a large market.</div>
+    <div style="flex: 1; display: flex; gap: 5%; min-height: 0;">
+      <!-- Concentric market circles -->
+      <div class="market-vis">
+        <div class="market-circles-wrap">
+          <div class="circle c-tam">
+            <div class="circle-label c-tam-label">TAM &nbsp;·&nbsp; €150M ARR</div>
+          </div>
+          <div class="circle c-sam">
+            <div class="circle-label c-sam-label">SAM &nbsp;·&nbsp; €5M ARR</div>
+          </div>
+          <div class="circle c-som">
+            <div class="c-som-label circle-label">SOM<br>€440k</div>
+          </div>
+        </div>
+      </div>
+      <!-- KPI tiles -->
+      <div style="flex: 1.1; display: flex; flex-direction: column; gap: 3.5%; justify-content: center;">
+        <div class="kpi-tile">
+          <div class="num" style="font-size: clamp(20px, 3.2vw, 40px);">€150M</div>
+          <div class="kpi-label">TAM — Total Addressable</div>
+          <div class="kpi-desc">500k+ sailing yachts &gt;12m globally. 40% of owners likely willing to pay @ €120 ARPU/yr for reliable technical assistance.</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="num ocean" style="font-size: clamp(20px, 3.2vw, 40px);">€5M</div>
+          <div class="kpi-label">SAM — Serviceable</div>
+          <div class="kpi-desc">15,000 active Bavaria yachts in Europe, US, and AU. Blended ARPU €120. Existing community infrastructure for distribution.</div>
+        </div>
+        <div class="kpi-tile" style="background: var(--navy); border-color: var(--navy);">
+          <div class="num" style="color: var(--sky); font-size: clamp(20px, 3.2vw, 40px);">€440k</div>
+          <div class="kpi-label" style="color: var(--ocean);">SOM — Year 3 Bottom-Up</div>
+          <div class="kpi-desc" style="color: rgba(255,255,255,.5);">Community GTM + dealer network + charter B2B. Conservative at 15% penetration of SAM.</div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">06</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     07 · TRACTION
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">07 / Traction</div>
+  <div class="slide tmpl-c">
+    <div class="slide-tag">Traction</div>
+    <div class="slide-title">Working product. Healthy unit economics. Zero external capital.</div>
+    <div class="kpi-grid">
+      <div class="kpi-tile" style="border-top: 3px solid var(--ocean);">
+        <div class="num ocean">Live</div>
+        <div class="kpi-label">MVP in Production</div>
+        <div class="kpi-desc">Auth · RAG chat · 11 cabin configs · PDF viewer. Real users, real queries, no critical bugs in 6 months.</div>
+      </div>
+      <div class="kpi-tile" style="border-top: 3px solid var(--ocean);">
+        <div class="num ocean">~85%</div>
+        <div class="kpi-label">Gross Margin</div>
+        <div class="kpi-desc">AI-assisted SaaS unit economics — LLM-enabled, not LLM-core. Margin expands as volume drives query batching.</div>
+      </div>
+      <div class="kpi-tile" style="border-top: 3px solid var(--ocean);">
+        <div class="num ocean">&gt;5.7×</div>
+        <div class="kpi-label">LTV : CAC</div>
+        <div class="kpi-desc">LTV €286 @ 3.5% monthly churn. CAC &lt;€50 via community GTM. Payback &lt;5 months.</div>
+      </div>
+      <div class="kpi-tile" style="border-top: 3px solid var(--navy);">
+        <div class="num" style="font-size: clamp(10px, 1.6vw, 20px); line-height: 1.3; letter-spacing: -.01em;">Next.js · Supabase · pgvector · OpenAI</div>
+        <div class="kpi-label">Production Stack</div>
+        <div class="kpi-desc">GPT-4o-mini + text-embedding-3-small · Vercel edge · SSR auth. No technical debt in critical paths.</div>
+      </div>
+    </div>
+    <div style="margin-top: 3.5%; font-size: clamp(6.5px, 0.82vw, 10px); color: var(--ink-60); font-style: italic;">
+      Capital accelerates distribution — not development. The product is done. What we're buying is reach.
+    </div>
+    <span class="sn">07</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     08 · BUSINESS MODEL
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">08 / Business Model</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Business Model</div>
+    <div class="slide-title">SaaS — Simple, scalable, predictable recurring revenue.</div>
+    <div class="body-layout">
+      <div class="body-left">
+        <div class="tier-row">
+          <div>
+            <div class="tier-name">Free</div>
+            <div class="tier-sub">5 queries / month &nbsp;·&nbsp; Acquisition engine</div>
+          </div>
+          <div class="tier-price">€0</div>
+        </div>
+        <div class="tier-row featured">
+          <div>
+            <div class="tier-name">Captain</div>
+            <div class="tier-sub">Unlimited chat &nbsp;·&nbsp; Config viewer &nbsp;·&nbsp; 1 boat</div>
+          </div>
+          <div class="tier-price">€9/mo &nbsp;·&nbsp; €89/yr</div>
+        </div>
+        <div class="tier-row">
+          <div>
+            <div class="tier-name">Admiral</div>
+            <div class="tier-sub">Multi-boat &nbsp;·&nbsp; Priority support &nbsp;·&nbsp; Early access</div>
+          </div>
+          <div class="tier-price">€19/mo &nbsp;·&nbsp; €179/yr</div>
+        </div>
+        <div style="margin-top: 3%; padding: 3.5% 4%; background: var(--mist); border-radius: 10px; border-left: 3px solid var(--ocean);">
+          <div style="font-size: clamp(6.5px, 0.78vw, 9px); font-weight: 700; color: var(--ocean); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 3%;">B2B Channel</div>
+          <div style="font-size: clamp(6.5px, 0.78vw, 9px); color: var(--ink-60); line-height: 1.7;">Charter fleets: €49/boat/yr &nbsp;·&nbsp; Bavaria dealers: €199/yr &nbsp;·&nbsp; Sailing schools: €299/yr</div>
+        </div>
+      </div>
+      <div class="body-right" style="align-items: flex-start;">
+        <div style="width: 100%;">
+          <div style="font-size: clamp(6.5px, 0.78vw, 9px); font-weight: 700; color: var(--ocean); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 4%;">Unit Economics</div>
+          <div class="ue-row"><span class="ue-key">Blended ARPU</span><span class="ue-val">€120 / yr</span></div>
+          <div class="ue-row"><span class="ue-key">Gross Margin</span><span class="ue-val">~85%</span></div>
+          <div class="ue-row"><span class="ue-key">LTV @ 3.5% churn</span><span class="ue-val">€286</span></div>
+          <div class="ue-row"><span class="ue-key">CAC (community GTM)</span><span class="ue-val">&lt;€50</span></div>
+          <div class="ue-row"><span class="ue-key">LTV : CAC</span><span class="ue-val">&gt;5.7×</span></div>
+          <div class="ue-row"><span class="ue-key">Payback period</span><span class="ue-val">&lt;5 months</span></div>
+          <div style="margin-top: 6%; background: rgba(0,119,190,.06); border-radius: 10px; padding: 4.5% 5%; font-size: clamp(6.5px, 0.82vw, 10px); color: var(--ocean); font-weight: 500; line-height: 1.6; border-left: 3px solid var(--ocean);">
+            An owner who spent €300k on their boat doesn't hesitate at €89/year. This is maintenance budget, not discretionary spend.
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">08</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     09 · COMPETITION
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">09 / Competition</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Competitive Landscape</div>
+    <div class="slide-title">SailSmart owns the only uncontested quadrant.</div>
+    <div class="body-layout">
+      <div class="body-left" style="justify-content: center; gap: 5%;">
+        <div style="display: flex; flex-direction: column; gap: 3.5%;">
+          <div style="display: flex; align-items: flex-start; gap: 4%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ink-60); line-height: 1.5;">
+            <span style="color: var(--ocean); font-weight: 700; flex-shrink: 0;">—</span>
+            <span><strong style="color: var(--ink);">BoatBot.ai:</strong> ChatGPT wrapper. Hallucinates Bavaria specifics. No proprietary knowledge base.</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 4%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ink-60); line-height: 1.5;">
+            <span style="color: var(--ocean); font-weight: 700; flex-shrink: 0;">—</span>
+            <span><strong style="color: var(--ink);">Saxdor AI:</strong> Model-specific but only for Saxdor buyers. Proof of concept that the model works — not a competitor for Bavaria owners.</span>
+          </div>
+          <div style="display: flex; align-items: flex-start; gap: 4%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ink-60); line-height: 1.5;">
+            <span style="color: var(--ocean); font-weight: 700; flex-shrink: 0;">—</span>
+            <span><strong style="color: var(--ink);">ChatGPT / Perplexity:</strong> Replies with generic Yanmar info — not C50-specific. No document grounding, no citation.</span>
+          </div>
+        </div>
+        <div style="background: rgba(0,119,190,.06); border-radius: 10px; padding: 4.5% 5%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ocean); font-weight: 500; line-height: 1.5; border-left: 3px solid var(--ocean); margin-top: 2%;">
+          Saxdor AI is the nearest proof of concept. But Saxdor serves only Saxdor. Nobody today serves Bavaria owners with this depth. That window is open now.
+        </div>
+      </div>
+      <div class="body-right">
+        <div style="position: relative; width: 86%; height: 76%;">
+          <div class="matrix">
+            <div class="quad" style="order:1; align-self:end;">
+              <div class="q-label">Generic + AI</div>
+              <div class="q-names">ChatGPT &nbsp;·&nbsp; BoatBot.ai &nbsp;·&nbsp; Perplexity</div>
+            </div>
+            <div class="quad highlight" style="order:2; align-self:end;">
+              <div class="q-label">&#9875; SAILSMART</div>
+              <div class="q-names">Sole operator<br>Model-specific + AI<br>Cited sources</div>
+            </div>
+            <div class="quad" style="order:3;">
+              <div class="q-label">Generic + Static</div>
+              <div class="q-names">Google &nbsp;·&nbsp; Sailing forums &nbsp;·&nbsp; Facebook groups</div>
+            </div>
+            <div class="quad" style="order:4;">
+              <div class="q-label">Model-Specific + Static</div>
+              <div class="q-names">Bavaria PDF &nbsp;·&nbsp; Local technician &nbsp;·&nbsp; Dealer</div>
+            </div>
+          </div>
+          <div class="matrix-axis-x">Generic ←——————————→ Model-specific</div>
+          <div class="matrix-axis-y">Static ←—— AI-powered</div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">09</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     10 · WHY WE WIN
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">10 / Why We Win</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Competitive Advantages</div>
+    <div class="slide-title">Three moats that deepen with every user.</div>
+    <div class="moat-grid">
+      <div class="moat-card">
+        <div class="moat-icon">&#128274;</div>
+        <h3>Proprietary Data Moat</h3>
+        <p>RAG on official Bavaria documentation is not replicable without access to the same PDFs, 4–8 weeks of indexing work, and a zero-hallucination citation system. We have it. No one else does.</p>
+        <div class="moat-strength">~12 month head start</div>
+        <div class="moat-bar-wrap"><div class="moat-bar" style="width: 90%;"></div></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-icon">&#9875;</div>
+        <h3>Founder Authenticity</h3>
+        <p>Florian owns a Bavaria C50. In the sailing community, that's the difference between "a slick tech tool" and "built by someone who actually sails." Trust earned through membership, not marketing.</p>
+        <div class="moat-strength">Community trust = earned, not bought</div>
+        <div class="moat-bar-wrap"><div class="moat-bar" style="width: 75%;"></div></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-icon">&#128260;</div>
+        <h3>Data Flywheel</h3>
+        <p>Every chat query is a data point. At 500+ active users, we accumulate the definitive corpus of what C50 owners actually ask — a dataset Bavaria itself doesn't have. Improves the product with every conversation.</p>
+        <div class="moat-strength">Better with every user added</div>
+        <div class="moat-bar-wrap"><div class="moat-bar" style="width: 60%;"></div></div>
+      </div>
+    </div>
+    <span class="sn">10</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     11 · GO-TO-MARKET
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">11 / Go-to-Market</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Go-to-Market Strategy</div>
+    <div class="slide-title">Community-first. Then the dealer channel. Then infrastructure.</div>
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-tag">Phase 1 &nbsp;·&nbsp; 0–6 mo</div>
+        <h3>Direct Community</h3>
+        <div class="phase-action">Bavaria Owners Forum (bavariayacht.org)</div>
+        <div class="phase-action">Facebook: Bavaria Yachts Group (~5,000+ members)</div>
+        <div class="phase-action">Bavaria Owners Association UK</div>
+        <div class="phase-action">Direct outreach to known C50 owners</div>
+        <div class="phase-goal">Target: 50–200 users &nbsp;·&nbsp; 10+ testimonials</div>
+        <div class="phase-arrow">→</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-tag">Phase 2 &nbsp;·&nbsp; 6–18 mo</div>
+        <h3>Multipliers</h3>
+        <div class="phase-action">~40 Bavaria dealers globally (partner programme)</div>
+        <div class="phase-action">Press: Yacht DE, Yachting Monthly, Cruising World</div>
+        <div class="phase-action">Boot Düsseldorf Jan 2027 (launch moment)</div>
+        <div class="phase-action">Charter B2B: Navigo, Pitter, Sail Ionian</div>
+        <div class="phase-goal">Target: first B2B contract &nbsp;·&nbsp; 500+ users</div>
+        <div class="phase-arrow">→</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-tag">Phase 3 &nbsp;·&nbsp; 18+ mo</div>
+        <h3>Expansion</h3>
+        <div class="phase-action">Bavaria C45 + C57 (3–6 days per model to onboard)</div>
+        <div class="phase-action">Jeanneau, Beneteau model families</div>
+        <div class="phase-action">White-label "SailSmart Engine" for manufacturers</div>
+        <div class="phase-goal">Platform play: marina-agnostic technical AI</div>
+      </div>
+    </div>
+    <span class="sn">11</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     12 · ROADMAP
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">12 / Roadmap</div>
+  <div class="slide tmpl-c">
+    <div class="slide-tag">24-Month Roadmap</div>
+    <div class="slide-title">Clear milestones. Capital deployed against distribution, not development.</div>
+    <div class="timeline">
+      <div class="milestone active">
+        <div class="ms-dot"></div>
+        <div class="ms-period">Q3 2026</div>
+        <div class="ms-title">Foundation</div>
+        <div class="ms-items">
+          Analytics &amp; funnel visibility<br>
+          Onboarding flow (first-run UX)<br>
+          10+ owner interviews<br>
+          Mobile UX polish
+        </div>
+        <div class="ms-milestone">&#9679; NOW — in progress</div>
+      </div>
+      <div class="milestone">
+        <div class="ms-dot"></div>
+        <div class="ms-period">Q4 2026</div>
+        <div class="ms-title">Monetisation</div>
+        <div class="ms-items">
+          Freemium paywall (Stripe)<br>
+          Bavaria C45 onboarding<br>
+          Maintenance reminder feature<br>
+          Community launch campaigns
+        </div>
+        <div class="ms-milestone">&#9733; First paying users</div>
+      </div>
+      <div class="milestone">
+        <div class="ms-dot"></div>
+        <div class="ms-period">Q1 2027</div>
+        <div class="ms-title">B2B Charter MVP</div>
+        <div class="ms-items">
+          QR-code token system for charter clients<br>
+          Fleet operator dashboard<br>
+          EN/DE multilingual support<br>
+          Boot Düsseldorf presence
+        </div>
+        <div class="ms-milestone">&#9733; First B2B contract</div>
+      </div>
+      <div class="milestone">
+        <div class="ms-dot"></div>
+        <div class="ms-period">Q2 2027+</div>
+        <div class="ms-title">Scale</div>
+        <div class="ms-items">
+          Bavaria C57 + additional models<br>
+          Offline mode (PWA)<br>
+          iOS + Android App Store<br>
+          Jeanneau / Beneteau pilots
+        </div>
+        <div class="ms-milestone">2028+ → manufacturer platform play</div>
+      </div>
+    </div>
+    <span class="sn">12</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     13 · TEAM
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">13 / Team</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Founder</div>
+    <div class="slide-title">The founder who knows this boat.</div>
+    <div class="body-layout">
+      <div class="body-left" style="justify-content: center; gap: 4%;">
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Bavaria C50 Owner</h3>
+            <p>Lives the problem. Knows the community. Not a market discovered in a spreadsheet — a market he sails in every season.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Full-Stack Builder</h3>
+            <p>Next.js, Supabase, OpenAI RAG architecture — built entirely solo, production-deployed. No agency, no contractors, no technical debt.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Zero-to-Production, Bootstrapped</h3>
+            <p>No external capital, no team overhead. The expensive, risky part — building the product — is complete. What remains is scaling what works.</p>
+          </div>
+        </div>
+        <div class="feat-row">
+          <div class="feat-dot"></div>
+          <div>
+            <h3>Community Credibility</h3>
+            <p>Direct access to Bavaria sailing communities as a genuine owner and user. The kind of trust that paid marketing cannot manufacture.</p>
+          </div>
+        </div>
+      </div>
+      <div class="body-right">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6%; text-align: center; width: 82%;">
+          <div class="founder-avatar" style="width: clamp(70px, 12vw, 130px); height: clamp(70px, 12vw, 130px); font-size: clamp(24px, 4.5vw, 52px);">FS</div>
+          <div>
+            <div style="font-size: clamp(12px, 1.6vw, 20px); font-weight: 800; color: var(--navy); letter-spacing: -.01em;">Florian Stefanides</div>
+            <div style="font-size: clamp(8.5px, 1vw, 13px); color: var(--ocean); margin-top: 3%; font-weight: 500;">Founder &amp; Bavaria C50 Owner</div>
+          </div>
+          <div style="background: var(--mist); border-radius: 12px; padding: 5.5% 6%; font-size: clamp(7px, 0.85vw, 10.5px); color: var(--ink); opacity: .75; font-style: italic; text-align: left; border-left: 3px solid var(--ocean); line-height: 1.65; width: 100%;">
+            "I am the user. I had the problem. I built the solution."
+          </div>
+          <div style="font-size: clamp(6.5px, 0.78vw, 9px); color: var(--ink-40); font-family: var(--f-mono);">f.stefanides@googlemail.com</div>
+        </div>
+      </div>
+    </div>
+    <span class="sn">13</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     14 · THE ASK
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">14 / The Ask</div>
+  <div class="slide tmpl-b">
+    <div class="slide-tag">Investment</div>
+    <div class="slide-title">Raising a pre-seed round to own distribution before anyone else does.</div>
+    <div class="ask-grid">
+      <!-- Primary card - full width -->
+      <div class="ask-card primary">
+        <div>
+          <div style="font-size: clamp(6.5px, 0.78vw, 9px); font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 3%;">Raising</div>
+          <div class="ask-amount">€150k</div>
+        </div>
+        <div style="flex: 1;">
+          <h3>Pre-Seed</h3>
+          <ul style="margin-top: 4%;">
+            <li>18-month runway to first revenue milestone</li>
+            <li>Community GTM execution &amp; user acquisition</li>
+            <li>Boot Düsseldorf 2027 launch activation</li>
+            <li>First B2B charter contracts</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Use of funds -->
+      <div class="ask-card">
+        <div class="ask-label">Use of Funds</div>
+        <h3>How capital gets deployed</h3>
+        <ul>
+          <li>40% &nbsp;·&nbsp; Community &amp; content distribution</li>
+          <li>25% &nbsp;·&nbsp; B2B sales (dealer + charter outreach)</li>
+          <li>20% &nbsp;·&nbsp; Product: Bavaria C45, payment, analytics</li>
+          <li>15% &nbsp;·&nbsp; Events (Boot Düsseldorf) + press</li>
+        </ul>
+      </div>
+      <!-- What we're not using it for -->
+      <div class="ask-card">
+        <div class="ask-label">What's already done</div>
+        <h3>Capital is not needed for</h3>
+        <ul>
+          <li>Core product — production-ready and deployed</li>
+          <li>RAG infrastructure — built, indexed, tested</li>
+          <li>Auth &amp; subscriptions — architecture complete</li>
+          <li>Technical hires — founder is the engineer</li>
+        </ul>
+      </div>
+    </div>
+    <span class="sn">14</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     15 · VISION / CLOSE
+════════════════════════════════════════════════════════════ -->
+<div class="slide-wrap">
+  <div class="slide-label">15 / Vision</div>
+  <div class="slide tmpl-a">
+    <div class="logo-mark">&#9875;&nbsp; SailSmart</div>
+    <div class="vision-headline">
+      From one boat to the digital infrastructure<br>
+      for every yacht owner in Europe.<br><br>
+      <span class="accent">Like Navionics for navigation —<br>SailSmart for everything else.</span>
+    </div>
+    <div class="vision-sub">
+      The knowledge layer that lives on every sailing yacht.<br>
+      Starting with one boat. Expanding to every hull.
+    </div>
+    <div class="vision-contact">
+      <span class="cta">f.stefanides@googlemail.com</span>
+      <span style="opacity: .4;">sailsmart.app</span>
+      <span style="opacity: .4;">June 2026</span>
+    </div>
+    <span class="sn sn-light">15</span>
+  </div>
+</div>
+
+
+</body>
+</html>

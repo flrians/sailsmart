@@ -178,3 +178,64 @@
   color: var(--ocean);
   font-weight: 600;
 }
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.choiceCard {
+  padding: 1.25rem 1rem;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  background: var(--bg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  font-family: inherit;
+}
+
+.choiceCard:hover {
+  border-color: var(--ocean);
+  box-shadow: 0 0 0 3px rgba(0,119,190,0.08);
+}
+
+.choiceIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(0,119,190,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.625rem;
+}
+
+.choiceLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.choiceDesc {
+  font-size: 0.72rem;
+  color: var(--mediterranean);
+  line-height: 1.45;
+}
+
+.backLink {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--mediterranean);
+  cursor: pointer;
+  text-align: center;
+  margin-top: 0.75rem;
+  padding: 0.25rem;
+}

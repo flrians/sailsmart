@@ -9,6 +9,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const { data: { user } } = await supabase.auth.getUser();
   const firstName = user?.user_metadata?.first_name as string | undefined;
 
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('account_type, company_name').eq('id', user.id).single()
+    : { data: null };
+
+  const accountType = (profile as any)?.account_type ?? 'personal';
+  const displayName = accountType === 'commercial'
+    ? (profile as any)?.company_name
+    : firstName;
+
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
@@ -19,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </span>
         </div>
         <div className={styles.headerRight}>
-          {firstName && <span className={styles.userName}>Hi, {firstName}</span>}
+          {displayName && <span className={styles.userName}>Hi, {displayName}</span>}
           <form action={signOut}>
             <button type="submit" className={styles.logoutBtn} title="Sign out">
               <LogOut size={18} />
@@ -32,7 +41,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         {children}
       </main>
 
-      <BottomNav />
+      <BottomNav accountType={accountType} />
     </div>
   );
 }

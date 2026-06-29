@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SailSmart — Commercial Analytics Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Design Tokens ── */
+  :root {
+    --deep-sea:       #002952;
+    --ocean:          #0077BE;
+    --mediterranean:  #4A90E2;
+    --sky:            #DDEEFF;
+    --surface:        #FFFFFF;
+    --bg:             #F0F5FA;
+    --border-light:   rgba(0, 80, 160, 0.1);
+    --shadow-card:    0 1px 3px rgba(0,41,82,0.05), 0 4px 14px rgba(0,41,82,0.07);
+    --shadow-hover:   0 4px 20px rgba(0,41,82,0.13);
+    --radius-lg:      16px;
+    --radius-md:      10px;
+    --radius-full:    9999px;
+    --transition-fast: 0.18s cubic-bezier(0.4,0,0.2,1);
+
+    /* Semantic chart colours */
+    --cat-nav:    #0077BE;
+    --cat-safety: #E05A2B;
+    --cat-engine: #B07D00;
+    --cat-comfort:#2E8B57;
+    --cat-electr: #6B4FAE;
+    --cat-other:  #8BA0B5;
+
+    /* Trend colours */
+    --trend-up:   #1A8A4A;
+    --trend-down: #CC3333;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--deep-sea);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── App Shell (simulated nav) ── */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── Top Nav ── */
+  .topnav {
+    background: var(--deep-sea);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.25rem;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    flex: 1;
+  }
+
+  .nav-logo span { color: var(--mediterranean); }
+
+  .nav-links {
+    display: flex;
+    gap: 0.125rem;
+  }
+
+  .nav-link {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    padding: 0.35rem 0.8rem;
+    border-radius: 8px;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .nav-link:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-link.active { background: rgba(0,119,190,0.25); color: #fff; }
+
+  /* ── Page Layout ── */
+  .page {
+    flex: 1;
+    padding: 1.5rem 1rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── Page Header ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--deep-sea);
+    letter-spacing: -0.025em;
+  }
+
+  .page-subtitle {
+    font-size: 0.8rem;
+    color: var(--mediterranean);
+    margin-top: 0.2rem;
+    font-weight: 400;
+  }
+
+  /* ── Period Filter ── */
+  .period-filter {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-card);
+    padding: 3px;
+    gap: 2px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
+  .period-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--mediterranean);
+    background: none;
+    border: none;
+    padding: 0.3rem 0.85rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    white-space: nowrap;
+    min-height: 32px;
+  }
+
+  .period-btn:hover { color: var(--ocean); }
+
+  .period-btn.active {
+    background: var(--ocean);
+    color: #fff;
+  }
+
+  /* ── Glass Panel ── */
+  .glass-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-panel:hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* ── Section Title ── */
+  .section-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--ocean);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border-left: 2px solid var(--ocean);
+    padding-left: 0.6rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ─────────────────────────────────────
+     1. KPI CARDS
+  ───────────────────────────────────── */
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /*
+   * KPI CARD COMPONENT
+   * ------------------
+   * .kpi-card         — outer panel (glass-panel extends)
+   * .kpi-icon         — small coloured icon circle (optional)
+   * .kpi-value        — headline number (e.g. "142")
+   * .kpi-unit         — inline unit suffix (e.g. " Chats")
+   * .kpi-label        — sub-label (e.g. "Diese Woche")
+   * .kpi-trend        — +12% badge, contextual colour
+   */
+
+  .kpi-card {
+    padding: 1.1rem 1.1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    cursor: default;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--ocean);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .kpi-card:hover::before { opacity: 1; }
+
+  .kpi-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+  }
+
+  .kpi-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kpi-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--sky);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-trend {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.18rem 0.5rem;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.02em;
+  }
+
+  .kpi-trend.up {
+    background: rgba(26,138,74,0.1);
+    color: var(--trend-up);
+  }
+
+  .kpi-trend.down {
+    background: rgba(204,51,51,0.08);
+    color: var(--trend-down);
+  }
+
+  .kpi-trend.neutral {
+    background: var(--sky);
+    color: var(--mediterranean);
+  }
+
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--deep-sea);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kpi-unit {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--mediterranean);
+  }
+
+  .kpi-label {
+    font-size: 0.72rem;
+    color: var(--mediterranean);
+    font-weight: 400;
+    margin-top: -0.2rem;
+  }
+
+  /* Featured / wide KPI card spans full width */
+  .kpi-card.wide {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .kpi-card.wide .kpi-value { font-size: 2.5rem; }
+
+  .kpi-card.wide .kpi-body { flex: 1; }
+
+  .kpi-spark {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .kpi-spark-bar {
+    width: 6px;
+    background: var(--sky);
+    border-radius: 3px 3px 0 0;
+    transition: background var(--transition-fast);
+  }
+
+  .kpi-spark-bar.peak { background: var(--ocean); }
+
+  /* ─────────────────────────────────────
+     2. TOPIC DISTRIBUTION  (Horizontal Bar)
+  ───────────────────────────────────── */
+
+  .topics-card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .topic-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 36px;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .topic-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--deep-sea);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topic-bar-track {
+    height: 8px;
+    background: var(--bg);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .topic-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .topic-pct {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--mediterranean);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ─────────────────────────────────────
+     3. TIME-OF-DAY  (Bar Chart)
+  ───────────────────────────────────── */
+
+  .timechart-card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .timechart-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 80px;
+    margin-top: 0.75rem;
+  }
+
+  .timechart-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .timechart-bar {
+    width: 100%;
+    background: var(--sky);
+    border-radius: 4px 4px 0 0;
+    transition: background var(--transition-fast);
+    min-height: 3px;
+    position: relative;
+  }
+
+  .timechart-bar.peak { background: var(--ocean); }
+
+  .timechart-bar:hover { background: var(--ocean); opacity: 0.8; }
+
+  .timechart-tick {
+    font-size: 0.58rem;
+    color: var(--mediterranean);
+    opacity: 0.65;
+    line-height: 1;
+  }
+
+  .timechart-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.62rem;
+    color: var(--mediterranean);
+    opacity: 0.65;
+    padding: 0 2px;
+  }
+
+  /* ─────────────────────────────────────
+     4. FLEET STATUS
+  ───────────────────────────────────── */
+
+  .fleet-card {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .fleet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0.5rem;
+  }
+
+  .fleet-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .fleet-row:last-child { border-bottom: none; }
+
+  .fleet-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .fleet-dot.active { background: var(--trend-up); box-shadow: 0 0 0 3px rgba(26,138,74,0.12); }
+  .fleet-dot.idle   { background: var(--mediterranean); opacity: 0.4; }
+
+  .fleet-name {
+    flex: 1;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--deep-sea);
+  }
+
+  .fleet-chats {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--mediterranean);
+    font-variant-numeric: tabular-nums;
+    width: 48px;
+    text-align: right;
+  }
+
+  .fleet-bar-mini {
+    width: 60px;
+    height: 4px;
+    background: var(--bg);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+
+  .fleet-bar-mini-fill {
+    height: 100%;
+    background: var(--ocean);
+    border-radius: var(--radius-full);
+  }
+
+  /* ─────────────────────────────────────
+     5. EMPTY STATE
+  ───────────────────────────────────── */
+
+  .empty-card {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .empty-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--sky);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+  }
+
+  .empty-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-sea);
+    letter-spacing: -0.02em;
+  }
+
+  .empty-body {
+    font-size: 0.78rem;
+    color: var(--mediterranean);
+    line-height: 1.65;
+    max-width: 260px;
+  }
+
+  .empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ocean);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .empty-cta:hover {
+    background: var(--deep-sea);
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Skeleton placeholder bars for empty KPIs */
+  .skeleton {
+    background: linear-gradient(90deg, var(--sky) 25%, #e8f1fa 50%, var(--sky) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+    border-radius: 6px;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ─────────────────────────────────────
+     UTILITY
+  ───────────────────────────────────── */
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .annotation {
+    background: rgba(255,220,0,0.15);
+    border: 1px dashed rgba(200,140,0,0.4);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.68rem;
+    color: #7a5800;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+  }
+
+  .annotation strong { font-weight: 700; }
+
+  /* ─────────────────────────────────────
+     DEMO TOGGLE — State switcher
+  ───────────────────────────────────── */
+
+  .demo-bar {
+    background: var(--deep-sea);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.7rem;
+    padding: 0.4rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .demo-bar strong { color: #fff; }
+
+  .demo-toggle {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+
+  .demo-toggle:hover, .demo-toggle.active { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+
+  /* ── Responsive ── */
+  @media (min-width: 640px) {
+    .page { padding: 2rem 1.5rem 4rem; }
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    .kpi-card.wide { grid-column: span 2; }
+    .timechart-wrap { height: 100px; }
+  }
+
+  @media (min-width: 900px) {
+    .page { padding: 2.5rem 2rem 4rem; }
+    .two-col { grid-template-columns: 3fr 2fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo controls -->
+<div class="demo-bar">
+  <strong>SailSmart Mockup</strong>
+  <span>Analytics Dashboard — Commercial Account</span>
+  <button class="demo-toggle active" onclick="showState('data')">Mit Daten</button>
+  <button class="demo-toggle" onclick="showState('empty')">Empty State</button>
+</div>
+
+<!-- App Shell -->
+<div class="app-shell">
+
+  <!-- Simulated Top Nav -->
+  <nav class="topnav">
+    <div class="nav-logo">Sail<span>Smart</span></div>
+    <div class="nav-links">
+      <a class="nav-link" href="#">Chat</a>
+      <a class="nav-link" href="#">My C50</a>
+      <a class="nav-link active" href="#">Analytics</a>
+      <a class="nav-link" href="#">Fleet</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page">
+
+    <!-- ── DATA STATE ── -->
+    <div id="state-data">
+
+      <!-- Page Header + Period Filter -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Analytics</h1>
+          <p class="page-subtitle">Adriatic Charter Co. — 6 Boote aktiv</p>
+        </div>
+        <!-- PERIOD FILTER: pill-tabs, platziert oben rechts, sticky auf Mobile -->
+        <div class="period-filter">
+          <button class="period-btn" onclick="setPeriod(this, '7d')">7 Tage</button>
+          <button class="period-btn active" onclick="setPeriod(this, '30d')">30 Tage</button>
+          <button class="period-btn" onclick="setPeriod(this, 'all')">Gesamt</button>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <strong>Annotation 1 — KPI Grid:</strong> 4 Cards nebeneinander auf Tablet/Desktop, 2×2 auf Mobile. Oberstes Element einer Analytics-Page — beantwortet "Wie lauft's?" in unter 2 Sekunden.
+      </div>
+
+      <!-- ── KPI CARDS ── -->
+      <div class="kpi-grid" style="margin-top:0.75rem;">
+
+        <!-- Card 1: Total Chats -->
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">💬</div>
+            <span class="kpi-trend up">+18%</span>
+          </div>
+          <div>
+            <span class="kpi-value">842</span><span class="kpi-unit"> Chats</span>
+          </div>
+          <div class="kpi-label">Letzte 30 Tage</div>
+        </div>
+
+        <!-- Card 2: Active Boats -->
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">⛵</div>
+            <span class="kpi-trend neutral">stabil</span>
+          </div>
+          <div>
+            <span class="kpi-value">6</span><span class="kpi-unit"> / 8</span>
+          </div>
+          <div class="kpi-label">Aktive Boote</div>
+        </div>
+
+        <!-- Card 3: Avg Session -->
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">⏱</div>
+            <span class="kpi-trend up">+3%</span>
+          </div>
+          <div>
+            <span class="kpi-value">4.2</span><span class="kpi-unit"> min</span>
+          </div>
+          <div class="kpi-label">Ø Session-Länge</div>
+        </div>
+
+        <!-- Card 4: Satisfaction Proxy -->
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-icon">✅</div>
+            <span class="kpi-trend down">−5%</span>
+          </div>
+          <div>
+            <span class="kpi-value">78</span><span class="kpi-unit">%</span>
+          </div>
+          <div class="kpi-label">Beantwortungsrate</div>
+        </div>
+
+      </div><!-- /kpi-grid -->
+
+      <div class="annotation">
+        <strong>Annotation 2 — Topic Distribution:</strong> Horizontale Bars schlagen Donut/Pie weil &gt;3 Kategorien und direkte Längenvergleiche klarer lesbar sind — besonders bei Sonnenlicht-Nutzung im Cockpit. Labels bleiben immer lesbar ohne Legende.
+      </div>
+
+      <!-- ── TWO-COL: Topics + Time-of-Day ── -->
+      <div class="two-col" style="margin-top:0.75rem;">
+
+        <!-- Topics Card -->
+        <div class="glass-panel topics-card">
+          <div class="section-label">Fragen nach Thema</div>
+
+          <div class="topics-list">
+
+            <div class="topic-row">
+              <span class="topic-label">Navigation</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:72%;background:var(--cat-nav);"></div>
+              </div>
+              <span class="topic-pct">72%</span>
+            </div>
+
+            <div class="topic-row">
+              <span class="topic-label">Sicherheit</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:48%;background:var(--cat-safety);"></div>
+              </div>
+              <span class="topic-pct">48%</span>
+            </div>
+
+            <div class="topic-row">
+              <span class="topic-label">Motor</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:35%;background:var(--cat-engine);"></div>
+              </div>
+              <span class="topic-pct">35%</span>
+            </div>
+
+            <div class="topic-row">
+              <span class="topic-label">Komfort</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:28%;background:var(--cat-comfort);"></div>
+              </div>
+              <span class="topic-pct">28%</span>
+            </div>
+
+            <div class="topic-row">
+              <span class="topic-label">Elektronik</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:18%;background:var(--cat-electr);"></div>
+              </div>
+              <span class="topic-pct">18%</span>
+            </div>
+
+            <div class="topic-row">
+              <span class="topic-label">Sonstiges</span>
+              <div class="topic-bar-track">
+                <div class="topic-bar-fill" style="width:10%;background:var(--cat-other);"></div>
+              </div>
+              <span class="topic-pct">10%</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Time-of-Day Bar Chart -->
+        <div class="glass-panel timechart-card">
+          <div class="section-label">Nutzung nach Uhrzeit</div>
+
+          <div class="annotation" style="margin-top:0.25rem;">
+            <strong>Annotation 3 — Balkendiagramm vs. Heatmap:</strong> Bars weil die Zielgruppe Charts lesen kann (Chartplotter-erfahren) und Stunden-Granularität reicht. Heatmap braucht zwingend Wochentag-Dimension — erst sinnvoll wenn genug Daten.
+          </div>
+
+          <div class="timechart-wrap">
+            <!-- 24 Stunden, hier 12 Stützpunkte für Platz -->
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:10%"></div>
+              <span class="timechart-tick">0</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:5%"></div>
+              <span class="timechart-tick">2</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:3%"></div>
+              <span class="timechart-tick">4</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:4%"></div>
+              <span class="timechart-tick">6</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:22%"></div>
+              <span class="timechart-tick">8</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar peak" style="height:78%"></div>
+              <span class="timechart-tick">10</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar peak" style="height:100%"></div>
+              <span class="timechart-tick">12</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:68%"></div>
+              <span class="timechart-tick">14</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar peak" style="height:82%"></div>
+              <span class="timechart-tick">16</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:55%"></div>
+              <span class="timechart-tick">18</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:38%"></div>
+              <span class="timechart-tick">20</span>
+            </div>
+            <div class="timechart-col">
+              <div class="timechart-bar" style="height:20%"></div>
+              <span class="timechart-tick">22</span>
+            </div>
+          </div>
+          <div class="timechart-legend">
+            <span>Peak: 12:00 Uhr</span>
+            <span>84 Anfragen</span>
+          </div>
+        </div>
+
+      </div><!-- /two-col -->
+
+      <div class="annotation">
+        <strong>Annotation 4 — Fleet Status:</strong> Inline Mikro-Bars statt Tabelle — erlaubt schnellen Relative-Vergleich ohne viel Platz. Aktiv-Punkt mit grünem Glow signalisiert "lebt" ohne Text. Tap auf eine Reihe: Boot-Detail-Drilldown (Phase 2).
+      </div>
+
+      <!-- Fleet Status -->
+      <div class="glass-panel fleet-card">
+        <div class="section-label">Boote im Zeitraum</div>
+
+        <div class="fleet-list">
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Aegean Dream"</span>
+            <span class="fleet-chats">312 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:100%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Bora Nova"</span>
+            <span class="fleet-chats">198 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:63%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Mistral"</span>
+            <span class="fleet-chats">145 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:46%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Scirocco"</span>
+            <span class="fleet-chats">112 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:36%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Tramontane"</span>
+            <span class="fleet-chats">58 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:19%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot active"></div>
+            <span class="fleet-name">Bavaria C50 — "Levante"</span>
+            <span class="fleet-chats">17 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:5%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot idle"></div>
+            <span class="fleet-name" style="opacity:0.45">Bavaria C50 — "Ponente"</span>
+            <span class="fleet-chats" style="opacity:0.35">0 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:0%"></div></div>
+          </div>
+
+          <div class="fleet-row">
+            <div class="fleet-dot idle"></div>
+            <span class="fleet-name" style="opacity:0.45">Bavaria C50 — "Greco"</span>
+            <span class="fleet-chats" style="opacity:0.35">0 Chats</span>
+            <div class="fleet-bar-mini"><div class="fleet-bar-mini-fill" style="width:0%"></div></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /#state-data -->
+
+
+    <!-- ── EMPTY STATE ── -->
+    <div id="state-empty" style="display:none;">
+
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Analytics</h1>
+          <p class="page-subtitle">Adriatic Charter Co. — Noch keine Daten</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <strong>Annotation 5 — Empty State Strategie:</strong> Kein leeres Chart-Gerippe anzeigen — das wirkt kaputt. Stattdessen: klare Erklärung + direkter CTA zur nächsten Aktion (QR Code anzeigen). Skeletons nur für Cards die "gleich laden" — nicht für dauerhaft leere Zustände.
+      </div>
+
+      <!-- Skeleton KPI row -->
+      <div class="kpi-grid" style="margin-top:0.75rem;margin-bottom:1.25rem;">
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top"><div class="skeleton" style="width:28px;height:28px;border-radius:8px;"></div></div>
+          <div class="skeleton" style="width:80px;height:32px;margin-top:0.4rem;"></div>
+          <div class="skeleton" style="width:60px;height:10px;margin-top:0.3rem;"></div>
+        </div>
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top"><div class="skeleton" style="width:28px;height:28px;border-radius:8px;"></div></div>
+          <div class="skeleton" style="width:60px;height:32px;margin-top:0.4rem;"></div>
+          <div class="skeleton" style="width:70px;height:10px;margin-top:0.3rem;"></div>
+        </div>
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top"><div class="skeleton" style="width:28px;height:28px;border-radius:8px;"></div></div>
+          <div class="skeleton" style="width:70px;height:32px;margin-top:0.4rem;"></div>
+          <div class="skeleton" style="width:80px;height:10px;margin-top:0.3rem;"></div>
+        </div>
+        <div class="glass-panel kpi-card">
+          <div class="kpi-top"><div class="skeleton" style="width:28px;height:28px;border-radius:8px;"></div></div>
+          <div class="skeleton" style="width:50px;height:32px;margin-top:0.4rem;"></div>
+          <div class="skeleton" style="width:90px;height:10px;margin-top:0.3rem;"></div>
+        </div>
+      </div>
+
+      <!-- Main empty card -->
+      <div class="glass-panel empty-card">
+        <div class="empty-icon">⚓</div>
+        <h2 class="empty-title">Noch keine Gast-Anfragen</h2>
+        <p class="empty-body">
+          Sobald Gäste den QR Code auf einem eurer Boote scannen und die erste Frage stellen, erscheinen hier Nutzungsdaten.
+        </p>
+        <a class="empty-cta" href="#">QR Code anzeigen</a>
+      </div>
+
+      <!-- Placeholder charts with overlay -->
+      <div style="position:relative;margin-bottom:1.25rem;">
+        <div class="glass-panel topics-card" style="filter:blur(2px);pointer-events:none;opacity:0.4;">
+          <div class="section-label">Fragen nach Thema</div>
+          <div class="topics-list">
+            <div class="topic-row">
+              <span class="topic-label">Navigation</span>
+              <div class="topic-bar-track"><div class="topic-bar-fill skeleton" style="width:72%;height:100%;"></div></div>
+              <span class="topic-pct skeleton" style="width:30px;height:12px;display:block;"></span>
+            </div>
+            <div class="topic-row">
+              <span class="topic-label">Sicherheit</span>
+              <div class="topic-bar-track"><div class="topic-bar-fill skeleton" style="width:48%;height:100%;"></div></div>
+              <span class="topic-pct skeleton" style="width:30px;height:12px;display:block;"></span>
+            </div>
+            <div class="topic-row">
+              <span class="topic-label">Motor</span>
+              <div class="topic-bar-track"><div class="topic-bar-fill skeleton" style="width:35%;height:100%;"></div></div>
+              <span class="topic-pct skeleton" style="width:30px;height:12px;display:block;"></span>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:0.72rem;font-weight:600;color:var(--mediterranean);background:var(--surface);padding:0.35rem 0.85rem;border-radius:var(--radius-full);border:1px solid var(--border-light);box-shadow:var(--shadow-card);">
+            Daten erscheinen nach den ersten Anfragen
+          </span>
+        </div>
+      </div>
+
+    </div><!-- /#state-empty -->
+
+  </main>
+</div><!-- /.app-shell -->
+
+<script>
+  function showState(s) {
+    document.getElementById('state-data').style.display = s === 'data' ? '' : 'none';
+    document.getElementById('state-empty').style.display = s === 'empty' ? '' : 'none';
+    document.querySelectorAll('.demo-toggle').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  function setPeriod(btn, period) {
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

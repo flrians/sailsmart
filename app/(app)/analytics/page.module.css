@@ -1,0 +1,333 @@
+.page {
+  padding: 1.5rem 1rem 5rem;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--mediterranean);
+  margin: 0.2rem 0 0;
+}
+
+/* Period filter */
+.periodFilter {
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.periodBtn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--mediterranean);
+  background: none;
+  border: none;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  min-height: 36px;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.periodBtn:hover { color: var(--ocean); }
+.periodActive { background: var(--ocean); color: #fff !important; }
+
+/* KPI grid */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .kpiGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.kpiCard {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-subtle);
+  padding: 1rem 1rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.kpiCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ocean);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.kpiCard:hover::before { opacity: 1; }
+.kpiCard:hover { box-shadow: 0 8px 24px rgba(0,51,102,0.12); transform: translateY(-1px); }
+
+.kpiTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpiIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0,119,190,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trend {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.trendUp   { background: rgba(5,150,105,0.1);  color: #059669; }
+.trendDown { background: rgba(220,38,38,0.08); color: #dc2626; }
+
+.kpiValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiUnit {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mediterranean);
+}
+
+.kpiLabel {
+  font-size: 0.7rem;
+  color: var(--mediterranean);
+}
+
+/* Charts grid */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .chartsGrid { grid-template-columns: 1fr; }
+}
+
+.chartCard {
+  padding: 1.1rem 1.1rem 1rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Topic bars */
+.topicList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.topicRow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.topicName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.barTrack {
+  flex: 1;
+  height: 8px;
+  background: rgba(0,119,190,0.08);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.topicPct {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--mediterranean);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Hourly chart */
+.hourlyChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 80px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.hourCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.hourBarWrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hourBar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+  min-height: 2px;
+}
+
+.hourLabel {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.58rem;
+  color: var(--mediterranean);
+  text-align: center;
+}
+
+.chartHint {
+  font-size: 0.7rem;
+  color: var(--mediterranean);
+  margin: 0.5rem 0 0;
+  text-align: right;
+}
+
+/* Boat list */
+.boatList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.boatRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.boatRowName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 140px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.boatRowCount {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ocean);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Empty / no data */
+.noData {
+  font-size: 0.82rem;
+  color: var(--mediterranean);
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.hourlyPlaceholder {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+}
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #e8f1fa 25%, #f0f7ff 50%, #e8f1fa 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeletonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}

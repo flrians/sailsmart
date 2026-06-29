@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SailSmart — Charter Partner Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ═══════════════════════════════════════════
+   BRAND TOKENS — SailSmart style guide
+═══════════════════════════════════════════ */
+:root {
+  --text-primary:   #003366;   /* Deep Sea Blue — headings */
+  --text-secondary: #4A90E2;   /* Mediterranean Blue */
+  --accent-blue:    #0077BE;   /* Ocean Blue — labels, bars, accents */
+  --bg-secondary:   #F0F8FF;
+  --accent-light:   #E0F2FE;
+  --border-light:   rgba(0,119,190,0.15);
+  --shadow-subtle:  0 4px 20px rgba(0,51,102,0.08);
+  --body-color:     rgba(0,51,102,0.70);
+
+  --white:   #FFFFFF;
+  --radius:  18px;
+  --radius-sm: 12px;
+
+  --f: 'Outfit', system-ui, sans-serif;
+
+  /* card shadow */
+  --card-shadow: 0 4px 20px rgba(0,51,102,0.08), 0 1px 4px rgba(0,51,102,0.04);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--f);
+  background: #0a2540;
+  padding: 32px 20px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE SHELL
+═══════════════════════════════════════════ */
+.slide-wrap {
+  max-width: 1280px;
+  margin: 0 auto 28px;
+}
+
+.slide {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.14);
+}
+
+/* ═══════════════════════════════════════════
+   BACKGROUNDS
+   Deep ocean → sky: #001F4D → #0077BE → #E0F2FE
+   Cover/close: near-full dark navy
+   Content slides: light sky at top-left, white center, deeper blue bottom-right
+═══════════════════════════════════════════ */
+
+/* Cover & close — dramatic dark */
+.bg-dark {
+  background:
+    radial-gradient(ellipse 70% 55% at 0% 0%, rgba(0,119,190,0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgba(0,51,102,0.60) 0%, transparent 55%),
+    linear-gradient(140deg, #001F4D 0%, #003366 45%, #00264D 100%);
+}
+
+/* Content slides — flat light sky blue */
+.bg-a, .bg-b, .bg-c, .bg-d, .bg-e, .bg-f {
+  background: #F0F8FF;
+}
+
+/* ═══════════════════════════════════════════
+   INNER LAYOUT
+═══════════════════════════════════════════ */
+.slide-inner {
+  position: absolute;
+  inset: 0;
+  padding: 4.5% 5.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════
+   LOGO — top right
+═══════════════════════════════════════════ */
+.logo {
+  position: absolute;
+  top: 4.5%;
+  right: 5.5%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  z-index: 10;
+  font-family: var(--f);
+  font-weight: 800;
+  font-size: clamp(11px, 1.3vw, 17px);
+  letter-spacing: -0.02em;
+  color: var(--accent-blue);
+}
+
+.logo-mark {
+  width: clamp(20px, 2.2vw, 28px);
+  height: clamp(20px, 2.2vw, 28px);
+  background: var(--accent-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-mark svg { width: 55%; height: 55%; fill: white; }
+
+.logo-light { color: rgba(255,255,255,0.88); }
+.logo-light .logo-mark { background: rgba(255,255,255,0.18); }
+
+/* ═══════════════════════════════════════════
+   SLIDE NUMBER — bottom left
+═══════════════════════════════════════════ */
+.num {
+  position: absolute;
+  bottom: 4%;
+  left: 5.5%;
+  font-family: var(--f);
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(0,51,102,0.30);
+  z-index: 10;
+}
+.num-light { color: rgba(255,255,255,0.28); }
+
+/* ═══════════════════════════════════════════
+   TYPE SYSTEM
+═══════════════════════════════════════════ */
+
+/* Section category label */
+.label {
+  font-family: var(--f);
+  font-size: clamp(11px, 1.0vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+  margin-bottom: 0.45em;
+}
+.label-light { color: rgba(255,255,255,0.50); }
+
+/* Accent bar under heading */
+.bar {
+  width: clamp(64px, 8vw, 110px);
+  height: 5px;
+  background: var(--accent-blue);
+  border-radius: 3px;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+  flex-shrink: 0;
+}
+.bar-light { background: rgba(255,255,255,0.38); }
+
+/* Main slide heading */
+.h1 {
+  font-family: var(--f);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.07;
+  letter-spacing: -0.03em;
+  font-size: clamp(28px, 4.4vw, 58px);
+}
+.h1-light { color: #FFFFFF; }
+
+/* Secondary heading */
+.h2 {
+  font-family: var(--f);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-size: clamp(24px, 3.8vw, 50px);
+}
+.h2-light { color: #FFFFFF; }
+
+/* Body / supporting text */
+.body {
+  font-family: var(--f);
+  font-weight: 400;
+  color: var(--body-color);
+  line-height: 1.55;
+  font-size: clamp(14px, 1.3vw, 18px);
+}
+.body-light { color: rgba(255,255,255,0.68); }
+
+/* ═══════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════ */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: clamp(18px, 2.4vw, 32px);
+  border: none;
+}
+
+.card-icon {
+  width: clamp(36px, 3.6vw, 48px);
+  height: clamp(36px, 3.6vw, 48px);
+  background: var(--accent-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8em;
+  flex-shrink: 0;
+}
+
+.card-icon svg {
+  width: 52%;
+  height: 52%;
+  stroke: var(--accent-blue);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-h {
+  font-family: var(--f);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: clamp(15px, 1.5vw, 20px);
+  line-height: 1.2;
+  margin-bottom: 0.4em;
+}
+
+.card-p {
+  font-family: var(--f);
+  font-weight: 400;
+  color: var(--body-color);
+  font-size: clamp(13px, 1.15vw, 16px);
+  line-height: 1.5;
+}
+
+/* Grids */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(12px, 1.6vw, 22px); }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(10px, 1.4vw, 20px); }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: clamp(8px, 1.1vw, 16px); }
+
+/* Stat number */
+.stat {
+  font-family: var(--f);
+  font-weight: 800;
+  color: var(--accent-blue);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-size: clamp(28px, 4vw, 52px);
+}
+
+/* Pill tag */
+.pill {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent-blue);
+  font-family: var(--f);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.28em 0.9em;
+  font-size: clamp(11px, 0.95vw, 13px);
+}
+
+/* ═══════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════ */
+@media print {
+  @page { size: landscape; margin: 0; }
+  body { background: #fff; padding: 0; }
+  .slide-wrap { margin: 0; page-break-after: always; }
+  .slide { border-radius: 0; box-shadow: none; aspect-ratio: unset; width: 297mm; height: 167mm; }
+  * { box-shadow: none !important; }
+  .card { border: 1px solid rgba(0,51,102,0.10) !important; }
+}
+
+</style>
+</head>
+<body>
+
+
+<!-- ═══════════════════════════════════════
+     01 — COVER
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-dark">
+
+  <div class="logo logo-light">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num num-light">01 / 09</div>
+
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:6% 14%;">
+
+    <div class="label label-light" style="margin-bottom:0.8em;">Charter Partner Pitch</div>
+
+    <div class="h1 h1-light" style="max-width:820px; margin-bottom:0.35em;">
+      The AI First Mate<br>for Every Charter Guest
+    </div>
+
+    <div class="bar bar-light" style="margin: 0.7em auto 1.2em;"></div>
+
+    <div class="body body-light" style="max-width:500px; margin-bottom:2.2em; font-size:clamp(15px,1.4vw,19px);">
+      Fewer support calls. Happier guests. Better reviews.<br>No app download. No skipper required.
+    </div>
+
+    <div style="display:flex; gap:clamp(20px,3vw,44px); align-items:center; margin-bottom:2em;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--f); font-weight:700; color:rgba(255,255,255,0.92); font-size:clamp(13px,1.2vw,16px);">Florian Stefanides</div>
+        <div style="font-family:var(--f); color:rgba(255,255,255,0.45); font-size:clamp(11px,0.95vw,14px); margin-top:3px;">Co-Founder</div>
+      </div>
+      <div style="width:1px; height:32px; background:rgba(255,255,255,0.15);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--f); font-weight:700; color:rgba(255,255,255,0.92); font-size:clamp(13px,1.2vw,16px);">Marco Fritz</div>
+        <div style="font-family:var(--f); color:rgba(255,255,255,0.45); font-size:clamp(11px,0.95vw,14px); margin-top:3px;">Co-Founder</div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--f); color:rgba(255,255,255,0.28); font-size:clamp(11px,0.9vw,13px); letter-spacing:0.1em;">sailsmart.app</div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     02 — WHO WE ARE
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-a">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">02 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Team</div>
+    <div class="h2">Two founders. Domain expertise meets execution.</div>
+    <div class="bar"></div>
+
+    <div class="g2" style="flex:1; align-items:stretch; gap:clamp(14px,1.8vw,24px);">
+
+      <div class="card" style="display:flex; flex-direction:column; gap:1em; border-top:4px solid var(--accent-blue);">
+        <div style="display:flex; align-items:center; gap:1em;">
+          <div style="width:clamp(40px,4.5vw,58px); height:clamp(40px,4.5vw,58px); border-radius:50%; background:linear-gradient(135deg,#003366,#0077BE); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-family:var(--f); font-weight:800; color:white; font-size:clamp(16px,1.8vw,24px);">M</span>
+          </div>
+          <div>
+            <div class="card-h" style="font-size:clamp(16px,1.6vw,22px);">Marco Fritz</div>
+            <span class="pill">Co-Founder</span>
+          </div>
+        </div>
+        <div class="card-p">
+          Bavaria C50 owner and experienced skipper. Marco lived the problem first-hand — confused guests, unread manuals, questions at the worst possible moments. He is SailSmart's first user and the origin of the product idea.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5em; margin-top:auto;">
+          <span class="pill">Bavaria C50 Owner</span>
+          <span class="pill">Experienced Skipper</span>
+          <span class="pill">Domain Expert</span>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:1em; border-top:4px solid var(--accent-blue);">
+        <div style="display:flex; align-items:center; gap:1em;">
+          <div style="width:clamp(40px,4.5vw,58px); height:clamp(40px,4.5vw,58px); border-radius:50%; background:linear-gradient(135deg,#003366,#0077BE); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-family:var(--f); font-weight:800; color:white; font-size:clamp(16px,1.8vw,24px);">F</span>
+          </div>
+          <div>
+            <div class="card-h" style="font-size:clamp(16px,1.6vw,22px);">Florian Stefanides</div>
+            <span class="pill">Co-Founder</span>
+          </div>
+        </div>
+        <div class="card-p">
+          Management and data analytics background. Started and launched companies before. Ex-Amazon Manager, 5 years at mobile.de. Drives the business, strategy, and execution behind SailSmart.
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5em; margin-top:auto;">
+          <span class="pill">Ex-Amazon</span>
+          <span class="pill">mobile.de</span>
+          <span class="pill">Strategy & Execution</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:clamp(10px,1.4vw,18px); background:var(--accent-light); border-radius:var(--radius-sm); padding:clamp(12px,1.6vw,20px) clamp(16px,2vw,28px); border-left:4px solid var(--accent-blue);">
+      <div style="font-family:var(--f); font-style:italic; font-size:clamp(14px,1.3vw,17px); color:var(--accent-blue); line-height:1.5;">
+        "A guest called me mid-passage asking where the seacock was. I was at the helm. That was the moment."
+      </div>
+      <div style="font-family:var(--f); font-weight:600; color:var(--body-color); font-size:clamp(12px,1.0vw,14px); margin-top:0.4em;">— Marco Fritz, Co-Founder</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     03 — PROBLEM (GUEST)
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-b">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">03 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Problem</div>
+    <div class="h2" style="max-width:760px;">Guests feel lost — and skippers spend more time answering questions than sailing</div>
+    <div class="bar"></div>
+
+    <div class="g3" style="flex:1;">
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="card-h">"Where is the...?"</div>
+        <div class="card-p">Guests can't find basic equipment. Every question forces the skipper to stop what they're doing and play tour guide.</div>
+        <div style="margin-top:auto; border-top:1px solid var(--border-light); padding-top:0.8em;">
+          <div style="font-family:var(--f); font-weight:800; color:#C0392B; font-size:clamp(16px,1.6vw,22px);">Every single hour</div>
+          <div class="card-p" style="font-size:clamp(12px,1.0vw,14px); margin-top:0.2em;">at minimum, on a typical charter day</div>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="card-h">Manuals nobody reads</div>
+        <div class="card-p">400+ pages buried in the chart table in three languages. Nobody reads them before a problem arises — and finding the answer takes 20 minutes.</div>
+        <div style="margin-top:auto; border-top:1px solid var(--border-light); padding-top:0.8em;">
+          <div style="font-family:var(--f); font-weight:800; color:#C0392B; font-size:clamp(16px,1.6vw,22px);">0% read rate</div>
+          <div class="card-p" style="font-size:clamp(12px,1.0vw,14px); margin-top:0.2em;">on the Bavaria C50 manual, per Marco's own experience</div>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="card-h">Skippers become babysitters</div>
+        <div class="card-p">Experienced skippers repeat the same answers all season instead of sailing. Guest satisfaction drops. Their satisfaction drops too.</div>
+        <div style="margin-top:auto; border-top:1px solid var(--border-light); padding-top:0.8em;">
+          <div style="font-family:var(--f); font-weight:800; color:#C0392B; font-size:clamp(16px,1.6vw,22px);">30–40%</div>
+          <div class="card-p" style="font-size:clamp(12px,1.0vw,14px); margin-top:0.2em;">of skipper time lost to repetitive guest questions</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     04 — PROBLEM (CHARTER COMPANY)
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-c">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">04 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Problem</div>
+    <div class="h2" style="max-width:760px;">Every confused guest costs you — in calls, reviews, and repeat bookings</div>
+    <div class="bar"></div>
+
+    <div class="g3" style="flex:1;">
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.42 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.9a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="card-h">High staff workload</div>
+        <div class="card-p">Your base team fields calls about the windlass, the engine, the navigation system. These are preventable. Your staff has better things to do.</div>
+        <div style="margin-top:auto;">
+          <span class="pill" style="background:#FFEEEE; color:#C0392B;">Operational Cost</span>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="card-h">Poor reviews</div>
+        <div class="card-p">A confused guest is an unhappy guest. Feeling lost aboard a charter yacht goes straight into the review — and affects your entire fleet's visibility on booking platforms.</div>
+        <div style="margin-top:auto;">
+          <span class="pill" style="background:#FFEEEE; color:#C0392B;">Revenue Risk</span>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; gap:0.8em;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="card-h">No scalable solution</div>
+        <div class="card-p">Every boat briefing is one-to-one and once. There is no way to reliably transfer boat knowledge to 50 guest groups across a season — without a tool built for it.</div>
+        <div style="margin-top:auto;">
+          <span class="pill" style="background:#FFEEEE; color:#C0392B;">Scalability Gap</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     05 — SOLUTION
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-d">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">05 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Solution</div>
+    <div class="h2">Ask anything. Get the answer. Instantly.</div>
+    <div class="bar"></div>
+
+    <div style="display:flex; gap:clamp(14px,2vw,28px); flex:1; align-items:stretch;">
+
+      <!-- Chat mockup panel -->
+      <div style="flex:1.2; background:linear-gradient(145deg,#001F4D 0%,#003366 60%,#004080 100%); border-radius:var(--radius); padding:clamp(16px,2.2vw,30px); display:flex; flex-direction:column; gap:clamp(10px,1.4vw,18px); min-width:0;">
+        <div style="font-family:var(--f); font-weight:600; color:rgba(255,255,255,0.45); font-size:clamp(11px,0.95vw,14px); letter-spacing:0.1em; text-transform:uppercase;">Bavaria C50 — Charter Guest Chat</div>
+
+        <!-- user -->
+        <div style="display:flex; justify-content:flex-end;">
+          <div style="background:var(--accent-blue); color:white; border-radius:14px 14px 4px 14px; padding:0.6em 1.1em; font-family:var(--f); font-size:clamp(13px,1.2vw,16px); max-width:80%; line-height:1.4;">
+            How do I start the engine if the bow thruster battery is flat?
+          </div>
+        </div>
+
+        <!-- AI -->
+        <div style="display:flex; gap:0.6em; align-items:flex-start;">
+          <div style="width:clamp(20px,2.2vw,28px); height:clamp(20px,2.2vw,28px); border-radius:50%; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+            <svg viewBox="0 0 24 24" width="55%" height="55%" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div style="background:rgba(255,255,255,0.10); border-radius:4px 14px 14px 14px; padding:0.6em 1.1em; font-family:var(--f); font-size:clamp(13px,1.2vw,16px); color:rgba(255,255,255,0.85); line-height:1.5;">
+            The bow thruster has its own battery — the main engine is unaffected. Start normally via the ignition panel. See <span style="color:#5DB8E0; text-decoration:underline;">Engine Manual p.&nbsp;34</span>.
+          </div>
+        </div>
+
+        <!-- user 2 -->
+        <div style="display:flex; justify-content:flex-end;">
+          <div style="background:var(--accent-blue); color:white; border-radius:14px 14px 4px 14px; padding:0.6em 1.1em; font-family:var(--f); font-size:clamp(13px,1.2vw,16px); max-width:80%; line-height:1.4;">
+            Where is the fire extinguisher?
+          </div>
+        </div>
+
+        <!-- AI 2 -->
+        <div style="display:flex; gap:0.6em; align-items:flex-start;">
+          <div style="width:clamp(20px,2.2vw,28px); height:clamp(20px,2.2vw,28px); border-radius:50%; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+            <svg viewBox="0 0 24 24" width="55%" height="55%" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div style="background:rgba(255,255,255,0.10); border-radius:4px 14px 14px 14px; padding:0.6em 1.1em; font-family:var(--f); font-size:clamp(13px,1.2vw,16px); color:rgba(255,255,255,0.85); line-height:1.5;">
+            Two extinguishers: one under the galley sink, one in the starboard cockpit locker. Both are ABC class powder.
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature callouts -->
+      <div style="flex:0.9; display:flex; flex-direction:column; gap:clamp(10px,1.4vw,18px); justify-content:center;">
+
+        <div class="card" style="display:flex; gap:0.9em; align-items:flex-start;">
+          <div class="card-icon" style="flex-shrink:0; margin-bottom:0;">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <div class="card-h">Natural language</div>
+            <div class="card-p">No search, no scrolling. Guests ask like they'd ask a person.</div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex; gap:0.9em; align-items:flex-start;">
+          <div class="card-icon" style="flex-shrink:0; margin-bottom:0;">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="card-h">Boat-specific knowledge</div>
+            <div class="card-p">SailSmart knows your exact model — manuals, configs, systems.</div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex; gap:0.9em; align-items:flex-start; background:var(--accent-light);">
+          <div class="card-icon" style="flex-shrink:0; margin-bottom:0; background:var(--accent-blue);">
+            <svg viewBox="0 0 24 24" style="stroke:white !important;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div class="card-h" style="color:var(--accent-blue);">24 / 7 — no skipper needed</div>
+            <div class="card-p">Available in port, at anchor, mid-passage. Guests get answers without disturbing anyone.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     06 — HOW IT WORKS
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-e">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">06 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Product</div>
+    <div class="h2">Three steps. Zero complexity.</div>
+    <div class="bar"></div>
+
+    <div style="display:flex; align-items:center; gap:clamp(8px,1.2vw,16px); flex:1;">
+
+      <div class="card" style="flex:1; height:100%; display:flex; flex-direction:column; gap:0.8em; justify-content:center;">
+        <div style="font-family:var(--f); font-weight:800; color:var(--accent-blue); font-size:clamp(40px,6vw,80px); line-height:1; letter-spacing:-0.03em;">01</div>
+        <div style="width:48px; height:4px; background:var(--accent-blue); border-radius:2px;"></div>
+        <div class="card-h">We upload your manuals</div>
+        <div class="card-p">Send us your boat documentation. We index everything into SailSmart, configured for your exact models.</div>
+      </div>
+
+      <div style="flex-shrink:0; color:var(--accent-blue); opacity:0.4;">
+        <svg viewBox="0 0 24 24" width="clamp(18px,2.2vw,30px)" height="clamp(18px,2.2vw,30px)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+
+      <div class="card" style="flex:1; height:100%; display:flex; flex-direction:column; gap:0.8em; justify-content:center;">
+        <div style="font-family:var(--f); font-weight:800; color:var(--accent-blue); font-size:clamp(40px,6vw,80px); line-height:1; letter-spacing:-0.03em;">02</div>
+        <div style="width:48px; height:4px; background:var(--accent-blue); border-radius:2px;"></div>
+        <div class="card-h">Guests scan a QR code</div>
+        <div class="card-p">A sticker in the cockpit. One scan — SailSmart loads in the browser, pre-configured for that exact boat. No app. No login.</div>
+      </div>
+
+      <div style="flex-shrink:0; color:var(--accent-blue); opacity:0.4;">
+        <svg viewBox="0 0 24 24" width="clamp(18px,2.2vw,30px)" height="clamp(18px,2.2vw,30px)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+
+      <div class="card" style="flex:1; height:100%; display:flex; flex-direction:column; gap:0.8em; justify-content:center; background:var(--accent-light);">
+        <div style="font-family:var(--f); font-weight:800; color:var(--accent-blue); font-size:clamp(40px,6vw,80px); line-height:1; letter-spacing:-0.03em;">03</div>
+        <div style="width:48px; height:4px; background:var(--accent-blue); border-radius:2px;"></div>
+        <div class="card-h" style="color:var(--accent-blue);">Any question → instant answer</div>
+        <div class="card-p">SailSmart searches the indexed manuals and returns the right answer with the source page referenced. No calls to base. No waiting.</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     07 — REAL SCENARIO
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-dark">
+
+  <div class="logo logo-light">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num num-light">07 / 09</div>
+
+  <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; padding:6% 8%;">
+
+    <div style="font-family:var(--f); font-weight:700; color:rgba(255,255,255,0.38); font-size:clamp(12px,1.1vw,15px); letter-spacing:0.18em; text-transform:uppercase; margin-bottom:0.6em;">A real scenario</div>
+
+    <div style="font-family:var(--f); font-weight:800; color:#FFFFFF; font-size:clamp(28px,4.5vw,60px); line-height:1.05; letter-spacing:-0.03em; margin-bottom:0.5em;">
+      21:30. Marina Portocolom.<br>Skipper is ashore.
+    </div>
+
+    <div style="width:clamp(64px,8vw,110px); height:5px; background:rgba(255,255,255,0.25); border-radius:3px; margin-bottom:1.4em;"></div>
+
+    <div style="display:flex; gap:clamp(16px,2.5vw,36px); align-items:flex-start; max-width:960px;">
+
+      <div style="flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10); border-radius:var(--radius); padding:clamp(16px,2.2vw,30px); display:flex; flex-direction:column; gap:0.7em;">
+        <div style="font-family:var(--f); font-weight:700; color:rgba(255,77,79,0.90); font-size:clamp(12px,1.1vw,15px); letter-spacing:0.12em; text-transform:uppercase;">Without SailSmart</div>
+        <div style="font-family:var(--f); color:rgba(255,255,255,0.72); font-size:clamp(14px,1.3vw,18px); line-height:1.6;">
+          Your guest can't get the hot water to work. They message the marina — no answer. They call your base — voicemail. They wait. They're frustrated. The next morning, they leave a 2-star review: <em style="color:rgba(255,255,255,0.45);">"Poor boat handover, nobody available for help."</em>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; padding-top:2em; flex-shrink:0;">
+        <svg viewBox="0 0 24 24" width="clamp(20px,2.5vw,32px)" height="clamp(20px,2.5vw,32px)" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+
+      <div style="flex:1; background:rgba(0,119,190,0.30); border:1px solid rgba(0,119,190,0.50); border-radius:var(--radius); padding:clamp(16px,2.2vw,30px); display:flex; flex-direction:column; gap:0.7em;">
+        <div style="font-family:var(--f); font-weight:700; color:rgba(93,184,224,0.95); font-size:clamp(12px,1.1vw,15px); letter-spacing:0.12em; text-transform:uppercase;">With SailSmart</div>
+        <div style="font-family:var(--f); color:rgba(255,255,255,0.82); font-size:clamp(14px,1.3vw,18px); line-height:1.6;">
+          Guest scans the QR code in the cockpit. Types: <em style="color:#5DB8E0;">"hot water not working"</em>. Gets the exact procedure — the right valve, the right sequence — in 10 seconds. Problem solved. Skipper never interrupted. Review: ⭐⭐⭐⭐⭐
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     08 — TEST PILOT PROGRAM
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-d">
+
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num">08 / 09</div>
+
+  <div class="slide-inner" style="justify-content:center;">
+
+    <div class="label">Partnership</div>
+    <div class="h2">No contract. No risk. Just 2–5 boats and honest feedback.</div>
+    <div class="bar"></div>
+
+    <div style="display:flex; gap:clamp(14px,1.8vw,24px); flex:1; align-items:stretch;">
+
+      <div class="card" style="flex:1; display:flex; flex-direction:column; gap:1em;">
+        <div class="card-h" style="font-size:clamp(15px,1.5vw,20px); color:var(--text-primary);">What we ask of you</div>
+
+        <div style="display:flex; flex-direction:column; gap:0.8em; flex:1;">
+          <div style="display:flex; gap:0.9em; align-items:flex-start; padding:0.9em; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <div style="width:clamp(28px,2.8vw,36px); height:clamp(28px,2.8vw,36px); border-radius:50%; background:var(--accent-blue); color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:var(--f); font-weight:800; font-size:clamp(13px,1.2vw,16px);">1</div>
+            <div>
+              <div class="card-h" style="margin-bottom:0.25em;">2–5 boats for one season</div>
+              <div class="card-p">Bavaria C50 ready today. We configure SailSmart for your exact models at no cost to you.</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.9em; align-items:flex-start; padding:0.9em; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <div style="width:clamp(28px,2.8vw,36px); height:clamp(28px,2.8vw,36px); border-radius:50%; background:var(--accent-blue); color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:var(--f); font-weight:800; font-size:clamp(13px,1.2vw,16px);">2</div>
+            <div>
+              <div class="card-h" style="margin-bottom:0.25em;">Guest feedback at season end</div>
+              <div class="card-p">We make it simple — a short form, no effort from your team.</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.9em; align-items:flex-start; padding:0.9em; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+            <div style="width:clamp(28px,2.8vw,36px); height:clamp(28px,2.8vw,36px); border-radius:50%; background:var(--accent-blue); color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:var(--f); font-weight:800; font-size:clamp(13px,1.2vw,16px);">3</div>
+            <div>
+              <div class="card-h" style="margin-bottom:0.25em;">One 30-min call per month</div>
+              <div class="card-p">Direct line to the founders. Your feedback shapes exactly what we build next.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1; display:flex; flex-direction:column; gap:1em; background:var(--accent-light);">
+        <div class="card-h" style="font-size:clamp(15px,1.5vw,20px); color:var(--accent-blue);">What you get in return</div>
+
+        <div style="display:flex; flex-direction:column; gap:0.6em; flex:1;">
+          <div style="display:flex; align-items:center; gap:0.7em; padding:0.7em; background:white; border-radius:var(--radius-sm);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="card-p" style="font-weight:600;">SailSmart fully configured for your fleet — free</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.7em; padding:0.7em; background:white; border-radius:var(--radius-sm);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="card-p" style="font-weight:600;">Your logo as a Founding Charter Partner</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.7em; padding:0.7em; background:white; border-radius:var(--radius-sm);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="card-p" style="font-weight:600;">Direct influence on the product roadmap</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.7em; padding:0.7em; background:white; border-radius:var(--radius-sm);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="card-p" style="font-weight:600;">Preferred pricing locked in for year two</span>
+          </div>
+        </div>
+
+        <div style="background:var(--accent-blue); color:white; border-radius:var(--radius-sm); padding:0.9em 1.1em; margin-top:auto;">
+          <div style="font-family:var(--f); font-weight:800; font-size:clamp(14px,1.3vw,18px); margin-bottom:0.3em;">No lock-in. No risk.</div>
+          <div style="font-family:var(--f); font-size:clamp(12px,1.1vw,15px); opacity:0.82; line-height:1.45;">If SailSmart doesn't deliver value after one season, you walk away. Simple as that.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     09 — CTA / CONTACT
+═══════════════════════════════════════ -->
+<div class="slide-wrap">
+<div class="slide bg-dark">
+
+  <div class="logo logo-light">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L3 19h18L12 2z"/></svg></div>
+    SailSmart
+  </div>
+  <div class="num num-light">09 / 09</div>
+
+  <div style="position:absolute; inset:0; display:flex; flex-direction:row; align-items:center; padding:5% 6%; gap:clamp(24px,4vw,60px);">
+
+    <!-- Left -->
+    <div style="flex:1; display:flex; flex-direction:column; gap:clamp(10px,1.4vw,18px);">
+      <div class="label label-light">Let's Talk</div>
+      <div class="h1 h1-light">Become a founding charter partner</div>
+      <div class="bar bar-light"></div>
+      <div class="body body-light" style="max-width:420px; font-size:clamp(15px,1.4vw,19px);">
+        We are looking for 3–5 charter companies to join us this season. Your boats, your guests, our technology — zero risk.
+      </div>
+      <div style="font-family:var(--f); font-style:italic; font-weight:300; color:rgba(255,255,255,0.40); font-size:clamp(13px,1.2vw,16px); margin-top:0.4em; line-height:1.4;">
+        "SailSmart — Always the right answer,<br>always on board."
+      </div>
+    </div>
+
+    <!-- Right: contact card -->
+    <div style="flex:0.8;">
+      <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:clamp(20px,3vw,40px); display:flex; flex-direction:column; gap:clamp(12px,1.6vw,22px);">
+
+        <div style="font-family:var(--f); font-weight:700; color:rgba(255,255,255,0.40); font-size:clamp(11px,0.9vw,13px); letter-spacing:0.14em; text-transform:uppercase;">Get in touch</div>
+
+        <div style="display:flex; align-items:center; gap:0.9em;">
+          <div style="width:clamp(40px,4.5vw,56px); height:clamp(40px,4.5vw,56px); border-radius:50%; background:rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-family:var(--f); font-weight:800; color:white; font-size:clamp(16px,1.8vw,24px);">F</span>
+          </div>
+          <div>
+            <div style="font-family:var(--f); font-weight:700; color:rgba(255,255,255,0.92); font-size:clamp(15px,1.5vw,20px);">Florian Stefanides</div>
+            <div style="font-family:var(--f); color:rgba(255,255,255,0.45); font-size:clamp(12px,1.1vw,15px); margin-top:2px;">Co-Founder</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.8em;">
+          <div style="display:flex; align-items:center; gap:0.8em;">
+            <div style="width:clamp(22px,2.4vw,30px); height:clamp(22px,2.4vw,30px); background:rgba(255,255,255,0.10); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg viewBox="0 0 24 24" width="55%" height="55%" fill="none" stroke="rgba(255,255,255,0.60)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div style="font-family:var(--f); color:rgba(255,255,255,0.82); font-size:clamp(13px,1.2vw,16px);">f.stefanides@googlemail.com</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.8em;">
+            <div style="width:clamp(22px,2.4vw,30px); height:clamp(22px,2.4vw,30px); background:rgba(255,255,255,0.10); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg viewBox="0 0 24 24" width="55%" height="55%" fill="none" stroke="rgba(255,255,255,0.60)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div style="font-family:var(--f); color:rgba(255,255,255,0.82); font-size:clamp(13px,1.2vw,16px);">sailsmart.app</div>
+          </div>
+        </div>
+
+        <div style="height:1px; background:rgba(255,255,255,0.10);"></div>
+
+        <div style="background:rgba(0,119,190,0.50); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-sm); padding:0.9em 1.1em;">
+          <div style="font-family:var(--f); font-weight:800; color:white; font-size:clamp(14px,1.3vw,18px); margin-bottom:0.3em;">3 spots left for Q3 2026</div>
+          <div style="font-family:var(--f); color:rgba(255,255,255,0.68); font-size:clamp(12px,1.1vw,15px); line-height:1.45;">The season starts soon. Reach out now to secure your spot.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+</body>
+</html>

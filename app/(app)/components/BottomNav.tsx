@@ -2,21 +2,29 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Ship, MessageCircle, User } from 'lucide-react';
+import { Ship, MessageCircle, User, Anchor, BarChart3 } from 'lucide-react';
 import styles from './BottomNav.module.css';
 
-const NAV_ITEMS = [
+const PERSONAL_NAV = [
   { href: '/my-c50', label: 'My C50', Icon: Ship },
   { href: '/', label: 'Chat', Icon: MessageCircle },
   { href: '/profile', label: 'Profile', Icon: User },
 ];
 
-export default function BottomNav() {
+const COMMERCIAL_NAV = [
+  { href: '/fleet', label: 'Fleet', Icon: Anchor },
+  { href: '/', label: 'Chat', Icon: MessageCircle },
+  { href: '/analytics', label: 'Analytics', Icon: BarChart3 },
+  { href: '/profile', label: 'Profile', Icon: User },
+];
+
+export default function BottomNav({ accountType = 'personal' }: { accountType?: string }) {
   const pathname = usePathname();
+  const items = accountType === 'commercial' ? COMMERCIAL_NAV : PERSONAL_NAV;
 
   return (
     <nav className={styles.nav}>
-      {NAV_ITEMS.map(({ href, label, Icon }) => {
+      {items.map(({ href, label, Icon }) => {
         const isActive = pathname === href;
         return (
           <Link
